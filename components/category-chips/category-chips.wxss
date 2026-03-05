@@ -4,7 +4,6 @@
 
 .chips-row {
   display: flex;
-  gap: 18rpx;
   padding: 10rpx 0 16rpx;
 }
 
@@ -18,6 +17,7 @@
   justify-content: center;
   padding-bottom: 28rpx;
   box-sizing: border-box;
+  margin-right: 18rpx;
 }
 
 .chip-active {

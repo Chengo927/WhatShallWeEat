@@ -1,6 +1,11 @@
 const { categories, dishes } = require('../../data/dishes')
 const { addDishToDate, getSelectedDishIds } = require('../../utils/storage')
 
+const DISH_MAP = dishes.reduce((accumulator, dish) => {
+  accumulator[dish.id] = dish
+  return accumulator
+}, {})
+
 function formatDate(dateObj) {
   const year = dateObj.getFullYear()
   const month = String(dateObj.getMonth() + 1).padStart(2, '0')
@@ -16,7 +21,10 @@ Page({
     selectedCategory: 'all',
     categories,
     selectedDishIds: [],
-    visibleDishes: []
+    selectedDishes: [],
+    visibleDishes: [],
+    showSummaryPopup: false,
+    bottomHint: '上滑查看更多菜品'
   },
 
   onLoad() {
@@ -48,9 +56,14 @@ Page({
 
   syncSelectedDishes() {
     const selectedDishIds = getSelectedDishIds(this.data.today)
+    const selectedDishes = selectedDishIds
+      .map((dishId) => DISH_MAP[dishId])
+      .filter((dish) => !!dish)
+
     this.setData(
       {
-        selectedDishIds
+        selectedDishIds,
+        selectedDishes
       },
       () => {
         this.applyFilters()
@@ -118,5 +131,23 @@ Page({
     })
 
     this.syncSelectedDishes()
+  },
+
+  onOpenSummary() {
+    this.setData({
+      showSummaryPopup: true
+    })
+  },
+
+  onCloseSummary() {
+    this.setData({
+      showSummaryPopup: false
+    })
+  },
+
+  onScrollToLower() {
+    this.setData({
+      bottomHint: '已滑动到底部'
+    })
   }
 })

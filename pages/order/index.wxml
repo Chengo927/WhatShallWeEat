@@ -1,27 +1,57 @@
 <view class="order-page">
   <view class="status-placeholder" style="height: {{statusBarHeight}}px;"></view>
+  <scroll-view
+    class="main-scroll"
+    scroll-y
+    enhanced
+    show-scrollbar="{{false}}"
+    bindscrolltolower="onScrollToLower"
+  >
+    <text class="page-title">今天吃什么呢？</text>
 
-  <text class="page-title">今天吃什么呢？</text>
+    <view class="search-wrap">
+      <search-bar value="{{searchKeyword}}" placeholder="Search" bindchange="onSearchChange"></search-bar>
+    </view>
 
-  <view class="search-wrap">
-    <search-bar value="{{searchKeyword}}" placeholder="Search" bindchange="onSearchChange"></search-bar>
+    <category-chips
+      categories="{{categories}}"
+      selected="{{selectedCategory}}"
+      bindchange="onCategoryChange"
+    ></category-chips>
+
+    <view class="dish-list">
+      <block wx:for="{{visibleDishes}}" wx:key="id">
+        <dish-card
+          dish="{{item}}"
+          disabled="{{item.added}}"
+          action-text="加入"
+          bindaction="onAddDish"
+        ></dish-card>
+      </block>
+      <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>
+      <view class="bottom-reached-hint">{{bottomHint}}</view>
+    </view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <text class="bottom-count">今日已选 {{selectedDishIds.length}} 道</text>
+    <view class="bottom-button" bindtap="onOpenSummary">查看已选</view>
   </view>
 
-  <category-chips
-    categories="{{categories}}"
-    selected="{{selectedCategory}}"
-    bindchange="onCategoryChange"
-  ></category-chips>
-
-  <view class="dish-list">
-    <block wx:for="{{visibleDishes}}" wx:key="id">
-      <dish-card
-        dish="{{item}}"
-        disabled="{{item.added}}"
-        action-text="加入"
-        bindaction="onAddDish"
-      ></dish-card>
-    </block>
-    <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>
+  <view wx:if="{{showSummaryPopup}}" class="popup-mask" bindtap="onCloseSummary"></view>
+  <view wx:if="{{showSummaryPopup}}" class="popup-panel">
+    <view class="popup-header">
+      <text class="popup-title">今日菜单</text>
+      <text class="popup-close" bindtap="onCloseSummary">关闭</text>
+    </view>
+    <scroll-view class="popup-scroll" scroll-y>
+      <view wx:if="{{!selectedDishes.length}}" class="popup-empty">今天还没有加入菜品</view>
+      <block wx:for="{{selectedDishes}}" wx:key="id">
+        <view class="popup-item">
+          <text class="popup-item-name">{{item.name}}</text>
+          <text class="popup-item-desc">{{item.desc}}</text>
+        </view>
+      </block>
+    </scroll-view>
   </view>
 </view>

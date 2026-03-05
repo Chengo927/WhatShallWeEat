@@ -14,11 +14,10 @@
     <text class="dish-desc">{{dish.desc}}</text>
   </view>
 
-  <button
+  <view
     class="action-btn {{actionVariant === 'danger' ? 'action-btn-danger' : ''}} {{disabled ? 'action-btn-disabled' : ''}}"
-    disabled="{{disabled}}"
     bindtap="onTapAction"
   >
     {{disabled ? disabledText : actionText}}
-  </button>
+  </view>
 </view>

@@ -1,12 +1,22 @@
 .order-page {
-  min-height: 100vh;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   background: #f4f4f4;
-  padding: 0 22rpx 48rpx;
-  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .status-placeholder {
+  flex-shrink: 0;
   width: 100%;
+}
+
+.main-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 0 22rpx 164rpx;
+  box-sizing: border-box;
 }
 
 .page-title {
@@ -30,4 +40,119 @@
   color: #8f8f8f;
   font-size: 28rpx;
   padding: 80rpx 0;
+}
+
+.bottom-reached-hint {
+  text-align: center;
+  color: #a1a1a1;
+  font-size: 24rpx;
+  padding: 16rpx 0 20rpx;
+}
+
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  box-shadow: 0 -6rpx 16rpx rgba(0, 0, 0, 0.08);
+  z-index: 30;
+}
+
+.bottom-count {
+  font-size: 28rpx;
+  color: #2d2d2d;
+}
+
+.bottom-button {
+  height: 68rpx;
+  line-height: 68rpx;
+  min-width: 188rpx;
+  padding: 0 26rpx;
+  text-align: center;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+  background: #00643e;
+  border-radius: 34rpx;
+  box-sizing: border-box;
+}
+
+.popup-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 40;
+}
+
+.popup-panel {
+  position: fixed;
+  left: 22rpx;
+  right: 22rpx;
+  bottom: calc(116rpx + env(safe-area-inset-bottom));
+  height: 560rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-header {
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1rpx solid #efefef;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  color: #1f1f1f;
+  font-weight: 600;
+}
+
+.popup-close {
+  font-size: 28rpx;
+  color: #00643e;
+}
+
+.popup-scroll {
+  flex: 1;
+  min-height: 0;
+  padding-top: 14rpx;
+}
+
+.popup-empty {
+  text-align: center;
+  color: #8f8f8f;
+  font-size: 28rpx;
+  padding: 100rpx 0;
+}
+
+.popup-item {
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #f1f1f1;
+}
+
+.popup-item-name {
+  display: block;
+  font-size: 30rpx;
+  color: #151515;
+  font-weight: 600;
+}
+
+.popup-item-desc {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 24rpx;
+  color: #8d8d8d;
+  line-height: 1.4;
 }

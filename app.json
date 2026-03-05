@@ -6,6 +6,7 @@
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
+  "componentFramework": "glass-easel",
   "style": "v2",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"
