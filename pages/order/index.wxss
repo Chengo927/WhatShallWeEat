@@ -202,7 +202,7 @@ page {
   left: 22rpx;
   right: 22rpx;
   bottom: calc(116rpx + env(safe-area-inset-bottom));
-  height: 560rpx;
+  height: 640rpx;
   background: #ffffff;
   border-radius: 24rpx;
   padding: 20rpx;
@@ -213,11 +213,18 @@ page {
 }
 
 .popup-header {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+  padding-bottom: 18rpx;
+  border-bottom: 1rpx solid #efefef;
+}
+
+.popup-header-main {
   height: 68rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1rpx solid #efefef;
 }
 
 .popup-title {
@@ -229,6 +236,37 @@ page {
 .popup-close {
   font-size: 28rpx;
   color: #00643e;
+}
+
+.popup-lottery-entry {
+  height: 94rpx;
+  border-radius: 18rpx;
+  padding: 0 24rpx;
+  background: #db4b4b;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.popup-lottery-entry-disabled {
+  background: #e9d7d7;
+}
+
+.popup-lottery-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.popup-lottery-meta {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.popup-lottery-entry-disabled .popup-lottery-title,
+.popup-lottery-entry-disabled .popup-lottery-meta {
+  color: #927e7e;
 }
 
 .popup-scroll {
@@ -251,6 +289,153 @@ page {
 
 .popup-item-name {
   display: block;
+  font-size: 30rpx;
+  color: #151515;
+  font-weight: 600;
+}
+
+.lottery-mask {
+  z-index: 60;
+}
+
+.lottery-panel {
+  position: fixed;
+  left: 22rpx;
+  right: 22rpx;
+  bottom: calc(116rpx + env(safe-area-inset-bottom));
+  height: 720rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+}
+
+.lottery-header {
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lottery-title {
+  font-size: 32rpx;
+  color: #1f1f1f;
+  font-weight: 600;
+}
+
+.lottery-close {
+  font-size: 28rpx;
+  color: #00643e;
+}
+
+.lottery-body {
+  border-top: 1rpx solid #efefef;
+  border-bottom: 1rpx solid #efefef;
+  padding: 20rpx 0;
+}
+
+.lottery-desc {
+  display: block;
+  color: #5a5a5a;
+  font-size: 25rpx;
+}
+
+.lottery-count-row {
+  margin-top: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lottery-count-label {
+  color: #1f1f1f;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.lottery-stepper {
+  display: flex;
+  align-items: center;
+  border: 1rpx solid #d8d8d8;
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+
+.lottery-stepper-btn {
+  width: 58rpx;
+  height: 52rpx;
+  line-height: 52rpx;
+  text-align: center;
+  font-size: 34rpx;
+  color: #0f6a47;
+  background: #f6f6f6;
+}
+
+.lottery-count-input {
+  width: 90rpx;
+  height: 52rpx;
+  line-height: 52rpx;
+  text-align: center;
+  color: #1f1f1f;
+  font-size: 28rpx;
+}
+
+.lottery-tip {
+  display: block;
+  margin-top: 16rpx;
+  color: #6c6c6c;
+  font-size: 24rpx;
+}
+
+.lottery-start-btn {
+  margin-top: 18rpx;
+  height: 66rpx;
+  line-height: 66rpx;
+  text-align: center;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: 34rpx;
+  background: #d34b4b;
+}
+
+.lottery-result-scroll {
+  flex: 1;
+  min-height: 0;
+  padding-top: 16rpx;
+}
+
+.lottery-result-title {
+  display: block;
+  color: #1f1f1f;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.lottery-empty {
+  text-align: center;
+  color: #8f8f8f;
+  font-size: 26rpx;
+  padding: 70rpx 0;
+}
+
+.lottery-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #f1f1f1;
+}
+
+.lottery-item-emoji {
+  font-size: 34rpx;
+  line-height: 1;
+}
+
+.lottery-item-name {
   font-size: 30rpx;
   color: #151515;
   font-weight: 600;

@@ -4,19 +4,17 @@ const dishes = Array.isArray(sourceData.dishes) ? sourceData.dishes : []
 const {
   addDishToDate,
   removeDishFromDate,
-  getSelectedDishIds,
+  getTodayMenu,
   getPendingDishIds,
+  getThinkPool,
+  appendDishesToDate,
+  getLastLotteryResult,
+  setLastLotteryResult,
   togglePendingDishToDate,
   removePendingDishFromDate,
   getMealCalendarMarks
 } = require('../../utils/storage')
-
-const DISH_MAP = dishes.reduce((accumulator, dish) => {
-  if (dish && dish.id) {
-    accumulator[dish.id] = dish
-  }
-  return accumulator
-}, {})
+const { clampLotteryCount, drawWithoutReplacement } = require('../../utils/lottery')
 
 function formatDate(dateObj) {
   const year = dateObj.getFullYear()
@@ -48,10 +46,16 @@ Page({
     selectedDishIds: [],
     pendingDishIds: [],
     selectedDishes: [],
+    thinkPool: [],
+    thinkPoolCount: 0,
     calendarMarks: {},
     visibleDishes: [],
     showSummaryPopup: false,
+    showLotteryPopup: false,
     showCalendarPopup: false,
+    lotteryCount: 1,
+    lotteryMaxCount: 0,
+    lotteryResult: [],
     bottomHint: '上滑查看更多菜品'
   },
 
@@ -106,21 +110,29 @@ Page({
 
   syncSelectedDishesSafe() {
     try {
-      const selectedDishIds = getSelectedDishIds(this.data.today)
-      const safeIds = Array.isArray(selectedDishIds) ? selectedDishIds : []
+      const selectedDishes = getTodayMenu(this.data.today)
+      const safeSelectedDishes = Array.isArray(selectedDishes) ? selectedDishes : []
+      const safeIds = safeSelectedDishes.map((dish) => dish.id).filter((dishId) => !!dishId)
       const pendingDishIds = getPendingDishIds(this.data.today)
       const safePendingIds = Array.isArray(pendingDishIds) ? pendingDishIds : []
+      const thinkPool = getThinkPool()
+      const safeThinkPool = Array.isArray(thinkPool) ? thinkPool : []
       const calendarMarks = getMealCalendarMarks()
-      const selectedDishes = safeIds
-        .map((dishId) => DISH_MAP[dishId])
-        .filter((dish) => !!dish)
+      const lotteryMaxCount = safeThinkPool.length
+      const nextLotteryCount = clampLotteryCount(this.data.lotteryCount, lotteryMaxCount)
+      const lotteryResult = getLastLotteryResult(this.data.today)
 
       this.setData(
         {
           selectedDishIds: safeIds,
           pendingDishIds: safePendingIds,
-          selectedDishes,
-          calendarMarks
+          selectedDishes: safeSelectedDishes,
+          thinkPool: safeThinkPool,
+          thinkPoolCount: lotteryMaxCount,
+          calendarMarks,
+          lotteryCount: nextLotteryCount || 0,
+          lotteryMaxCount,
+          lotteryResult: Array.isArray(lotteryResult) ? lotteryResult : []
         },
         () => {
           this.applyFiltersSafe()
@@ -132,7 +144,12 @@ Page({
         selectedDishIds: [],
         pendingDishIds: [],
         selectedDishes: [],
+        thinkPool: [],
+        thinkPoolCount: 0,
         calendarMarks: {},
+        lotteryCount: 0,
+        lotteryMaxCount: 0,
+        lotteryResult: [],
         visibleDishes: []
       })
     }
@@ -242,8 +259,8 @@ Page({
 
   onTogglePending(event) {
     try {
-      const { dishId } = event.detail || {}
-      const isPending = togglePendingDishToDate(this.data.today, dishId)
+      const { dishId, dish } = event.detail || {}
+      const isPending = togglePendingDishToDate(this.data.today, dishId, dish)
       wx.showToast({
         title: isPending ? '已设为待选' : '已取消待选',
         icon: 'success'
@@ -262,6 +279,115 @@ Page({
     this.setData({
       showSummaryPopup: true
     })
+  },
+
+  onOpenLottery() {
+    const maxCount = Number(this.data.thinkPoolCount) || 0
+    if (!maxCount) {
+      wx.showToast({
+        title: '容我想想里还没有菜',
+        icon: 'none'
+      })
+      return
+    }
+
+    this.setData({
+      showLotteryPopup: true,
+      lotteryMaxCount: maxCount,
+      lotteryCount: clampLotteryCount(this.data.lotteryCount, maxCount)
+    })
+  },
+
+  onCloseLottery() {
+    this.setData({
+      showLotteryPopup: false
+    })
+  },
+
+  onDecreaseLotteryCount() {
+    const maxCount = Number(this.data.lotteryMaxCount) || 0
+    if (!maxCount) {
+      return
+    }
+
+    const current = clampLotteryCount(this.data.lotteryCount, maxCount)
+    this.setData({
+      lotteryCount: Math.max(1, current - 1)
+    })
+  },
+
+  onIncreaseLotteryCount() {
+    const maxCount = Number(this.data.lotteryMaxCount) || 0
+    if (!maxCount) {
+      return
+    }
+
+    const current = clampLotteryCount(this.data.lotteryCount, maxCount)
+    this.setData({
+      lotteryCount: Math.min(maxCount, current + 1)
+    })
+  },
+
+  onLotteryCountInput(event) {
+    const rawValue = event && event.detail ? event.detail.value : ''
+    const inputCount = Number(rawValue) || 0
+    const maxCount = Number(this.data.lotteryMaxCount) || 0
+    this.setData({
+      lotteryCount: clampLotteryCount(inputCount, maxCount)
+    })
+  },
+
+  onStartLottery() {
+    try {
+      const thinkPool = Array.isArray(this.data.thinkPool) ? this.data.thinkPool : []
+      const poolSize = thinkPool.length
+      if (!poolSize) {
+        wx.showToast({
+          title: '容我想想里还没有菜',
+          icon: 'none'
+        })
+        return
+      }
+
+      const lotteryCount = clampLotteryCount(this.data.lotteryCount, poolSize)
+      if (!lotteryCount) {
+        wx.showToast({
+          title: '请先选择抽取数量',
+          icon: 'none'
+        })
+        return
+      }
+
+      const lotteryResult = drawWithoutReplacement(thinkPool, lotteryCount)
+      setLastLotteryResult(this.data.today, lotteryResult)
+      const appendResult = appendDishesToDate(this.data.today, lotteryResult)
+      const addedCount =
+        appendResult && typeof appendResult.addedCount === 'number' ? appendResult.addedCount : 0
+
+      this.setData({
+        lotteryCount,
+        lotteryResult
+      })
+      this.syncSelectedDishesSafe()
+
+      let toastTitle = '抽奖完成'
+      if (addedCount > 0) {
+        toastTitle = `新增${addedCount}道菜`
+      } else {
+        toastTitle = '结果已在今日菜单'
+      }
+
+      wx.showToast({
+        title: toastTitle,
+        icon: 'none'
+      })
+    } catch (error) {
+      console.error('[order] onStartLottery failed', error)
+      wx.showToast({
+        title: '抽奖失败，请重试',
+        icon: 'none'
+      })
+    }
   },
 
   onOpenCalendar() {
@@ -297,7 +423,8 @@ Page({
 
   onCloseSummary() {
     this.setData({
-      showSummaryPopup: false
+      showSummaryPopup: false,
+      showLotteryPopup: false
     })
   },
 

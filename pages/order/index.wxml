@@ -75,14 +75,59 @@
   <view wx:if="{{showSummaryPopup}}" class="popup-mask" bindtap="onCloseSummary"></view>
   <view wx:if="{{showSummaryPopup}}" class="popup-panel">
     <view class="popup-header">
-      <text class="popup-title">今日菜单</text>
-      <text class="popup-close" bindtap="onCloseSummary">关闭</text>
+      <view class="popup-header-main">
+        <text class="popup-title">今日菜单</text>
+        <text class="popup-close" bindtap="onCloseSummary">关闭</text>
+      </view>
+      <view
+        class="popup-lottery-entry {{thinkPoolCount ? '' : 'popup-lottery-entry-disabled'}}"
+        bindtap="onOpenLottery"
+      >
+        <text class="popup-lottery-title">抽奖</text>
+        <text class="popup-lottery-meta">候选池 {{thinkPoolCount}} 道</text>
+      </view>
     </view>
     <scroll-view class="popup-scroll" scroll-y>
       <view wx:if="{{!selectedDishes.length}}" class="popup-empty">今天还没有加入菜品</view>
       <block wx:for="{{selectedDishes}}" wx:key="id">
         <view class="popup-item">
-          <text class="popup-item-name">{{item.name}}</text>
+          <text class="popup-item-name">{{item.emoji}} {{item.name}}</text>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <view wx:if="{{showLotteryPopup}}" class="popup-mask lottery-mask" bindtap="onCloseLottery"></view>
+  <view wx:if="{{showLotteryPopup}}" class="lottery-panel">
+    <view class="lottery-header">
+      <text class="lottery-title">抽奖系统</text>
+      <text class="lottery-close" bindtap="onCloseLottery">关闭</text>
+    </view>
+    <view class="lottery-body">
+      <text class="lottery-desc">容我想想候选池共 {{lotteryMaxCount}} 道菜</text>
+      <view class="lottery-count-row">
+        <text class="lottery-count-label">抽取数量</text>
+        <view class="lottery-stepper">
+          <view class="lottery-stepper-btn" bindtap="onDecreaseLotteryCount">-</view>
+          <input
+            class="lottery-count-input"
+            type="number"
+            value="{{lotteryCount}}"
+            bindinput="onLotteryCountInput"
+          />
+          <view class="lottery-stepper-btn" bindtap="onIncreaseLotteryCount">+</view>
+        </view>
+      </view>
+      <text class="lottery-tip">默认自动加入今日菜单（自动去重）</text>
+      <view class="lottery-start-btn" bindtap="onStartLottery">开始抽奖</view>
+    </view>
+    <scroll-view class="lottery-result-scroll" scroll-y>
+      <text class="lottery-result-title">抽奖结果</text>
+      <view wx:if="{{!lotteryResult.length}}" class="lottery-empty">点击开始抽奖后显示结果</view>
+      <block wx:for="{{lotteryResult}}" wx:key="id">
+        <view class="lottery-item">
+          <text class="lottery-item-emoji">{{item.emoji || '🍽️'}}</text>
+          <text class="lottery-item-name">{{item.name}}</text>
         </view>
       </block>
     </scroll-view>
