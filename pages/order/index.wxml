@@ -8,7 +8,7 @@
     </view>
   </view>
 
-  <view class="content-wrap">
+  <view wx:if="{{pageReady}}" class="content-wrap">
     <view class="category-pane">
       <category-chips
         categories="{{categories}}"
@@ -21,7 +21,6 @@
     <scroll-view
       class="dish-scroll"
       scroll-y
-      enhanced
       show-scrollbar="{{false}}"
       bindscrolltolower="onScrollToLower"
     >
@@ -40,6 +39,8 @@
       </view>
     </scroll-view>
   </view>
+
+  <view wx:else class="content-wrap content-loading"></view>
 
   <view class="bottom-bar">
     <text class="bottom-count">今日已选 {{selectedDishIds.length}} 道</text>

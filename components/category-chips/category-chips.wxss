@@ -3,9 +3,9 @@
   white-space: nowrap;
 }
 
-.chips-scroll-vertical {
+.chips-vertical-wrap {
   height: 100%;
-  white-space: normal;
+  overflow: hidden;
 }
 
 .chips-row {

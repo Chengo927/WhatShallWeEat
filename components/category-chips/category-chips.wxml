@@ -1,18 +1,27 @@
-<scroll-view
-  class="chips-scroll {{vertical ? 'chips-scroll-vertical' : ''}}"
-  scroll-x="{{!vertical}}"
-  scroll-y="{{vertical}}"
-  show-scrollbar="{{false}}"
->
-  <view class="chips-row {{vertical ? 'chips-col' : ''}}">
+<scroll-view wx:if="{{!vertical}}" class="chips-scroll" scroll-x show-scrollbar="{{false}}">
+  <view class="chips-row">
     <view
       wx:for="{{categories}}"
       wx:key="id"
-      class="chip {{vertical ? 'chip-vertical' : ''}} {{selected === item.id ? 'chip-active' : ''}}"
+      class="chip {{selected === item.id ? 'chip-active' : ''}}"
       data-value="{{item.id}}"
       bindtap="onTapChip"
     >
-      <text class="chip-text {{vertical ? 'chip-text-vertical' : ''}}">{{item.label}}</text>
+      <text class="chip-text">{{item.label}}</text>
     </view>
   </view>
 </scroll-view>
+
+<view wx:else class="chips-vertical-wrap">
+  <view class="chips-row chips-col">
+    <view
+      wx:for="{{categories}}"
+      wx:key="id"
+      class="chip chip-vertical {{selected === item.id ? 'chip-active' : ''}}"
+      data-value="{{item.id}}"
+      bindtap="onTapChip"
+    >
+      <text class="chip-text chip-text-vertical">{{item.label}}</text>
+    </view>
+  </view>
+</view>

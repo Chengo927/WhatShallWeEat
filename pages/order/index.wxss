@@ -44,6 +44,10 @@ page {
   overflow: hidden;
 }
 
+.content-loading {
+  background: transparent;
+}
+
 .category-pane {
   flex: 0 0 176rpx;
   min-height: 0;
