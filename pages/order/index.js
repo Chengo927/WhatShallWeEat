@@ -54,7 +54,7 @@ Page({
 
   initPageData() {
     try {
-      const windowInfo = wx.getSystemInfoSync() || {}
+      const windowInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : {}
       const rawStatusBarHeight = Number(windowInfo.statusBarHeight) || 0
       const menuRect =
         typeof wx.getMenuButtonBoundingClientRect === 'function'
