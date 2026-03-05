@@ -1,16 +1,36 @@
 const categories = [
   { id: 'all', label: '全部' },
-  { id: 'chicken', label: '鸡肉🐔' },
-  { id: 'beef', label: '牛肉🥩' },
-  { id: 'fish', label: '鱼肉🐟' },
-  { id: 'shrimp', label: '虾类🦐' }
+  { id: 'chicken', label: '鸡肉🐔', emoji: '🐔' },
+  { id: 'beef', label: '牛肉🥩', emoji: '🥩' },
+  { id: 'fish', label: '鱼肉🐟', emoji: '🐟' },
+  { id: 'shrimp', label: '虾类🦐', emoji: '🦐' }
 ]
+
+const categoryMap = {
+  chicken: {
+    name: '鸡肉',
+    emoji: '🐔'
+  },
+  beef: {
+    name: '牛肉',
+    emoji: '🥩'
+  },
+  fish: {
+    name: '鱼肉',
+    emoji: '🐟'
+  },
+  shrimp: {
+    name: '虾类',
+    emoji: '🦐'
+  }
+}
 
 const dishes = [
   {
     id: 'dish_001',
     name: '小炒肉',
     desc: '辣椒与肉片快炒，口感鲜香下饭。',
+    categoryId: 'beef',
     category: 'beef',
     emoji: '🥩'
   },
@@ -18,6 +38,7 @@ const dishes = [
     id: 'dish_002',
     name: '小炒黄牛肉',
     desc: '嫩牛肉搭配青椒，香辣开胃。',
+    categoryId: 'beef',
     category: 'beef',
     emoji: '🥘'
   },
@@ -25,6 +46,7 @@ const dishes = [
     id: 'dish_003',
     name: '清蒸鱼',
     desc: '鱼肉细嫩，葱姜提鲜，口味清爽。',
+    categoryId: 'fish',
     category: 'fish',
     emoji: '🐟'
   },
@@ -32,6 +54,7 @@ const dishes = [
     id: 'dish_004',
     name: '清蒸虾',
     desc: '虾肉弹嫩，低油清淡，适合晚餐。',
+    categoryId: 'shrimp',
     category: 'shrimp',
     emoji: '🦐'
   },
@@ -39,6 +62,7 @@ const dishes = [
     id: 'dish_005',
     name: '宫保鸡丁',
     desc: '鸡丁配花生与微辣酱汁，咸香平衡。',
+    categoryId: 'chicken',
     category: 'chicken',
     emoji: '🍗'
   },
@@ -46,6 +70,7 @@ const dishes = [
     id: 'dish_006',
     name: '柠香鸡胸',
     desc: '鸡胸肉口感轻盈，带微酸柠檬香。',
+    categoryId: 'chicken',
     category: 'chicken',
     emoji: '🍋'
   },
@@ -53,6 +78,7 @@ const dishes = [
     id: 'dish_007',
     name: '番茄龙利鱼',
     desc: '番茄汤底酸甜适中，鱼片软嫩。',
+    categoryId: 'fish',
     category: 'fish',
     emoji: '🍅'
   },
@@ -60,6 +86,7 @@ const dishes = [
     id: 'dish_010',
     name: '蒜蓉粉丝虾',
     desc: '蒜蓉香味浓郁，虾与粉丝吸汁入味。',
+    categoryId: 'shrimp',
     category: 'shrimp',
     emoji: '🍤'
   }
@@ -67,5 +94,6 @@ const dishes = [
 
 module.exports = {
   categories,
+  categoryMap,
   dishes
 }

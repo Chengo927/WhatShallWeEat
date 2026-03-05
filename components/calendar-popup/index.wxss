@@ -1,0 +1,162 @@
+.calendar-popup {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 120;
+}
+
+.calendar-popup__mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.calendar-popup__panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 680rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
+  padding: 24rpx 18rpx 20rpx;
+  box-sizing: border-box;
+  box-shadow: 0 16rpx 36rpx rgba(0, 0, 0, 0.16);
+}
+
+.calendar-popup__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14rpx;
+}
+
+.calendar-popup__title {
+  color: #1f1f1f;
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.calendar-popup__title-hit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88rpx;
+  min-width: 280rpx;
+  padding: 0 24rpx;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+}
+
+.calendar-popup__title-hit--active {
+  opacity: 0.75;
+}
+
+.calendar-popup__title-arrow {
+  margin-left: 10rpx;
+  color: #707070;
+  font-size: 22rpx;
+}
+
+.calendar-popup__weekday-row {
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #f0f0f0;
+  padding: 12rpx 0;
+}
+
+.calendar-popup__weekday {
+  width: 14.2857%;
+  text-align: center;
+  color: #707070;
+  font-size: 24rpx;
+}
+
+.calendar-popup__day-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10rpx 0 0;
+}
+
+.calendar-popup__day {
+  width: 14.2857%;
+  height: 96rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 6rpx;
+  box-sizing: border-box;
+  color: #262626;
+  font-size: 28rpx;
+}
+
+.calendar-popup__day-number {
+  width: 58rpx;
+  height: 58rpx;
+  line-height: 58rpx;
+  text-align: center;
+  border-radius: 29rpx;
+}
+
+.calendar-popup__day--outside {
+  color: #b8bcc2;
+}
+
+.calendar-popup__day--selected .calendar-popup__day-number {
+  background: #00643e;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.calendar-popup__day-marks {
+  margin-top: 2rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24rpx;
+}
+
+.calendar-popup__day-mark {
+  font-size: 20rpx;
+  line-height: 1;
+}
+
+.calendar-popup__day-mark + .calendar-popup__day-mark {
+  margin-left: 2rpx;
+}
+
+.calendar-popup__day-mark--extra {
+  color: #8b8b8b;
+}
+
+.calendar-popup__day--hover {
+  opacity: 0.82;
+}
+
+.calendar-popup__footer {
+  margin-top: 8rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.calendar-popup__close {
+  min-width: 196rpx;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  border-radius: 36rpx;
+  font-size: 28rpx;
+  color: #00643e;
+  background: #eff8f4;
+}
+
+.calendar-popup__close--active {
+  opacity: 0.75;
+}

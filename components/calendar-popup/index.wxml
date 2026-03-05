@@ -1,0 +1,61 @@
+<view wx:if="{{visible}}" class="calendar-popup" catchtap="noop" catchtouchmove="noop">
+  <view class="calendar-popup__mask" catchtap="onMaskTap"></view>
+
+  <view class="calendar-popup__panel" catchtap="noop">
+    <view class="calendar-popup__header">
+      <picker
+        mode="multiSelector"
+        range="{{yearMonthRange}}"
+        value="{{yearMonthValue}}"
+        bindchange="onYearMonthChange"
+        bindcancel="onYearMonthCancel"
+      >
+        <view
+          class="calendar-popup__title-hit"
+          hover-class="calendar-popup__title-hit--active"
+          hover-stay-time="80"
+        >
+          <text class="calendar-popup__title">{{displayYear}}年 {{displayMonth}}月</text>
+          <text class="calendar-popup__title-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="calendar-popup__weekday-row">
+      <block wx:for="{{weekdays}}" wx:key="*this">
+        <text class="calendar-popup__weekday">{{item}}</text>
+      </block>
+    </view>
+
+    <view class="calendar-popup__day-grid">
+      <block wx:for="{{days}}" wx:key="key" wx:for-item="dayItem">
+        <view
+          class="calendar-popup__day {{dayItem.currentMonth ? '' : 'calendar-popup__day--outside'}} {{dayItem.selected ? 'calendar-popup__day--selected' : ''}}"
+          data-date="{{dayItem.date}}"
+          bindtap="onSelectDate"
+          hover-class="calendar-popup__day--hover"
+          hover-stay-time="80"
+        >
+          <text class="calendar-popup__day-number">{{dayItem.day}}</text>
+          <view class="calendar-popup__day-marks" wx:if="{{dayItem.marks.length || dayItem.marksExtra}}">
+            <block wx:for="{{dayItem.marks}}" wx:key="*this" wx:for-item="emojiMark">
+              <text class="calendar-popup__day-mark">{{emojiMark}}</text>
+            </block>
+            <text wx:if="{{dayItem.marksExtra}}" class="calendar-popup__day-mark calendar-popup__day-mark--extra">
+              {{dayItem.marksExtra}}
+            </text>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="calendar-popup__footer">
+      <view
+        class="calendar-popup__close"
+        bindtap="onCloseTap"
+        hover-class="calendar-popup__close--active"
+        hover-stay-time="80"
+      >关闭</view>
+    </view>
+  </view>
+</view>

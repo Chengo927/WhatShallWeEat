@@ -2,7 +2,30 @@
   <view class="status-placeholder" style="height: {{statusBarHeight}}px;"></view>
 
   <view class="page-head">
-    <text class="page-title">今天吃什么呢？</text>
+    <view class="page-head-main">
+      <text class="page-title">今天吃什么呢？</text>
+      <view
+        class="calendar-entry"
+        bindtap="onOpenCalendar"
+        hover-class="calendar-entry--active"
+        hover-stay-time="80"
+        aria-role="button"
+        aria-label="打开日历"
+      >
+        <view class="calendar-icon">
+          <view class="calendar-icon__top"></view>
+          <view class="calendar-icon__grid">
+            <view class="calendar-icon__dot"></view>
+            <view class="calendar-icon__dot"></view>
+            <view class="calendar-icon__dot"></view>
+            <view class="calendar-icon__dot"></view>
+            <view class="calendar-icon__dot"></view>
+            <view class="calendar-icon__dot"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <text class="selected-date">已选日期：{{dateLabel}}</text>
     <view class="search-wrap">
       <search-bar value="{{searchKeyword}}" placeholder="Search" bindchange="onSearchChange"></search-bar>
     </view>
@@ -63,4 +86,12 @@
       </block>
     </scroll-view>
   </view>
+
+  <calendar-popup
+    visible="{{showCalendarPopup}}"
+    value="{{today}}"
+    marks="{{calendarMarks}}"
+    bindclose="onCloseCalendar"
+    bindconfirm="onCalendarConfirm"
+  ></calendar-popup>
 </view>

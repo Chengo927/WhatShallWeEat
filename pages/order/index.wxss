@@ -22,12 +22,72 @@ page {
   box-sizing: border-box;
 }
 
-.page-title {
-  display: block;
+.page-head-main {
   margin-top: 24rpx;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.page-title {
+  flex: 1;
+  min-width: 0;
   color: #00643e;
   font-size: 56rpx;
   font-weight: 700;
+}
+
+.calendar-entry {
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 24rpx;
+  background: #ffffff;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.calendar-entry--active {
+  opacity: 0.75;
+}
+
+.calendar-icon {
+  width: 48rpx;
+  height: 54rpx;
+  border: 3rpx solid #00643e;
+  border-radius: 10rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.calendar-icon__top {
+  height: 12rpx;
+  background: #00643e;
+}
+
+.calendar-icon__grid {
+  padding: 8rpx 6rpx 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rpx;
+  box-sizing: border-box;
+}
+
+.calendar-icon__dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: rgba(0, 100, 62, 0.55);
+}
+
+.selected-date {
+  display: block;
+  margin-top: 10rpx;
+  color: #6f6f6f;
+  font-size: 24rpx;
 }
 
 .search-wrap {

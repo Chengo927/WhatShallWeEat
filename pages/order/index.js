@@ -1,7 +1,7 @@
 const sourceData = require('../../data/dishes') || {}
 const categories = Array.isArray(sourceData.categories) ? sourceData.categories : []
 const dishes = Array.isArray(sourceData.dishes) ? sourceData.dishes : []
-const { addDishToDate, getSelectedDishIds } = require('../../utils/storage')
+const { addDishToDate, getSelectedDishIds, getMealCalendarMarks } = require('../../utils/storage')
 
 const DISH_MAP = dishes.reduce((accumulator, dish) => {
   if (dish && dish.id) {
@@ -17,19 +17,32 @@ function formatDate(dateObj) {
   return `${year}-${month}-${day}`
 }
 
+function formatDateLabel(dateStr) {
+  const matches = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr || '')
+  if (!matches) {
+    return dateStr || ''
+  }
+
+  const [, year, month, day] = matches
+  return `${year}年${Number(month)}月${Number(day)}日`
+}
+
 Page({
   data: {
     pageReady: false,
     initError: '',
     statusBarHeight: 0,
     today: '',
+    dateLabel: '--',
     searchKeyword: '',
     selectedCategory: 'all',
     categories,
     selectedDishIds: [],
     selectedDishes: [],
+    calendarMarks: {},
     visibleDishes: [],
     showSummaryPopup: false,
+    showCalendarPopup: false,
     bottomHint: '上滑查看更多菜品'
   },
 
@@ -41,15 +54,7 @@ Page({
     if (!this.data.pageReady) {
       return
     }
-
-    const today = formatDate(new Date())
-    if (today !== this.data.today) {
-      this.setData({ today }, () => {
-        this.syncSelectedDishesSafe()
-      })
-    } else {
-      this.syncSelectedDishesSafe()
-    }
+    this.syncSelectedDishesSafe()
   },
 
   initPageData() {
@@ -70,6 +75,7 @@ Page({
         {
           statusBarHeight,
           today,
+          dateLabel: formatDateLabel(today),
           initError: ''
         },
         () => {
@@ -93,6 +99,7 @@ Page({
     try {
       const selectedDishIds = getSelectedDishIds(this.data.today)
       const safeIds = Array.isArray(selectedDishIds) ? selectedDishIds : []
+      const calendarMarks = getMealCalendarMarks()
       const selectedDishes = safeIds
         .map((dishId) => DISH_MAP[dishId])
         .filter((dish) => !!dish)
@@ -100,7 +107,8 @@ Page({
       this.setData(
         {
           selectedDishIds: safeIds,
-          selectedDishes
+          selectedDishes,
+          calendarMarks
         },
         () => {
           this.applyFiltersSafe()
@@ -111,6 +119,7 @@ Page({
       this.setData({
         selectedDishIds: [],
         selectedDishes: [],
+        calendarMarks: {},
         visibleDishes: []
       })
     }
@@ -202,6 +211,37 @@ Page({
     this.setData({
       showSummaryPopup: true
     })
+  },
+
+  onOpenCalendar() {
+    this.setData({
+      showCalendarPopup: true
+    })
+  },
+
+  onCloseCalendar() {
+    this.setData({
+      showCalendarPopup: false
+    })
+  },
+
+  onCalendarConfirm(event) {
+    const { date } = event.detail || {}
+    if (!date) {
+      this.onCloseCalendar()
+      return
+    }
+
+    this.setData(
+      {
+        today: date,
+        dateLabel: formatDateLabel(date),
+        showCalendarPopup: false
+      },
+      () => {
+        this.syncSelectedDishesSafe()
+      }
+    )
   },
 
   onCloseSummary() {

@@ -1,10 +1,11 @@
 {
-  "renderer": "skyline",
+  "renderer": "webview",
   "componentFramework": "glass-easel",
   "navigationStyle": "custom",
   "usingComponents": {
     "dish-card": "/components/dish-card/dish-card",
     "category-chips": "/components/category-chips/category-chips",
-    "search-bar": "/components/search-bar/search-bar"
+    "search-bar": "/components/search-bar/search-bar",
+    "calendar-popup": "/components/calendar-popup/index"
   }
 }
