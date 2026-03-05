@@ -55,7 +55,15 @@ Page({
   initPageData() {
     try {
       const windowInfo = wx.getSystemInfoSync() || {}
-      const statusBarHeight = Number(windowInfo.statusBarHeight) || 0
+      const rawStatusBarHeight = Number(windowInfo.statusBarHeight) || 0
+      const menuRect =
+        typeof wx.getMenuButtonBoundingClientRect === 'function'
+          ? wx.getMenuButtonBoundingClientRect()
+          : null
+      const statusBarHeight =
+        menuRect && menuRect.top && menuRect.bottom
+          ? Number(menuRect.bottom + menuRect.top - rawStatusBarHeight) || rawStatusBarHeight + 44
+          : rawStatusBarHeight + 44
       const today = formatDate(new Date())
 
       this.setData(
