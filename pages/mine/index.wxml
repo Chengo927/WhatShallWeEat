@@ -1,0 +1,6 @@
+<view class="mine-page">
+  <view class="mine-card">
+    <text class="mine-title">我的</text>
+    <text class="mine-desc">占位页面，后续可在此扩展个人设置与偏好。</text>
+  </view>
+</view>

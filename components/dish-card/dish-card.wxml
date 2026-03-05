@@ -1,12 +1,12 @@
 <view class="dish-card">
   <view class="thumb-wrap">
     <image
-      wx:if="{{dish.image}}"
       class="thumb-image"
-      src="{{dish.image}}"
-      mode="aspectFit"
+      src="{{thumbSrc}}"
+      mode="aspectFill"
+      binderror="onThumbError"
+      lazy-load="{{true}}"
     />
-    <text wx:else class="thumb-emoji">{{dish.emoji || '🍔'}}</text>
   </view>
 
   <view class="dish-content">

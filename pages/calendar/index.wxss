@@ -1,0 +1,28 @@
+.calendar-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #f4f4f4;
+  padding: 28rpx 22rpx calc(140rpx + env(safe-area-inset-bottom));
+}
+
+.calendar-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx 28rpx;
+  box-sizing: border-box;
+}
+
+.calendar-title {
+  display: block;
+  color: #1f1f1f;
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.calendar-desc {
+  display: block;
+  margin-top: 14rpx;
+  color: #6f6f6f;
+  font-size: 26rpx;
+  line-height: 1.6;
+}

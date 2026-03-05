@@ -14,6 +14,50 @@ const {
 } = require('../../utils/storage')
 const { clampLotteryCount, drawWithoutReplacement } = require('../../utils/lottery')
 
+const DISH_PLACEHOLDER_IMAGE = '/assets/dishes/placeholder.png'
+
+function buildDishImageById(dishId) {
+  if (typeof dishId !== 'string' || !dishId) {
+    return ''
+  }
+  return `/assets/dishes/${dishId}.png`
+}
+
+function resolveDishImage(dish) {
+  if (!dish || typeof dish !== 'object') {
+    return DISH_PLACEHOLDER_IMAGE
+  }
+
+  const preferredImage =
+    (typeof dish.img === 'string' && dish.img) ||
+    (typeof dish.image === 'string' && dish.image) ||
+    (typeof dish.imageUrl === 'string' && dish.imageUrl) ||
+    ''
+
+  return preferredImage || buildDishImageById(dish.id) || DISH_PLACEHOLDER_IMAGE
+}
+
+function withDishImage(dish) {
+  if (!dish || typeof dish !== 'object') {
+    return null
+  }
+
+  const img = resolveDishImage(dish)
+  return {
+    ...dish,
+    img,
+    image: img
+  }
+}
+
+function withDishImageList(rawList) {
+  if (!Array.isArray(rawList)) {
+    return []
+  }
+
+  return rawList.map((dish) => withDishImage(dish)).filter((dish) => !!dish)
+}
+
 function formatDate(dateObj) {
   const year = dateObj.getFullYear()
   const month = String(dateObj.getMonth() + 1).padStart(2, '0')
@@ -64,10 +108,26 @@ Page({
   },
 
   onShow() {
+    this.updateTabBarSelected()
     if (!this.data.pageReady) {
       return
     }
     this.syncSelectedDishesSafe()
+  },
+
+  updateTabBarSelected() {
+    if (typeof this.getTabBar !== 'function') {
+      return
+    }
+
+    const tabBar = this.getTabBar()
+    if (!tabBar || typeof tabBar.setData !== 'function') {
+      return
+    }
+
+    tabBar.setData({
+      selected: 0
+    })
   },
 
   initPageData() {
@@ -110,12 +170,12 @@ Page({
 
   syncSelectedDishesSafe() {
     try {
-      const selectedDishes = getTodayMenu(this.data.today)
+      const selectedDishes = withDishImageList(getTodayMenu(this.data.today))
       const safeSelectedDishes = Array.isArray(selectedDishes) ? selectedDishes : []
       const safeIds = safeSelectedDishes.map((dish) => dish.id).filter((dishId) => !!dishId)
       const pendingDishIds = getPendingDishIds(this.data.today)
       const safePendingIds = Array.isArray(pendingDishIds) ? pendingDishIds : []
-      const thinkPool = getThinkPool()
+      const thinkPool = withDishImageList(getThinkPool())
       const safeThinkPool = Array.isArray(thinkPool) ? thinkPool : []
       const calendarMarks = getMealCalendarMarks()
       const lotteryMaxCount = safeThinkPool.length
@@ -211,12 +271,17 @@ Page({
           return matchCategory && matchKeyword
         })
         .map((dish) => {
+          const safeDish = withDishImage(dish)
+          if (!safeDish) {
+            return null
+          }
           return {
-            ...dish,
+            ...safeDish,
             added: !!selectedMap[dish.id],
             pending: !!pendingMap[dish.id]
           }
         })
+        .filter((dish) => !!dish)
 
       this.setData({
         visibleDishes

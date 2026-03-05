@@ -1,0 +1,15 @@
+<view class="tab-bar-wrap">
+  <view class="tab-bar-main">
+    <block wx:for="{{list}}" wx:key="pagePath">
+      <view
+        class="tab-item {{selected === index ? 'tab-item-active' : ''}}"
+        data-index="{{index}}"
+        data-path="{{item.pagePath}}"
+        bindtap="onTabItemTap"
+      >
+        <view class="tab-indicator {{selected === index ? 'tab-indicator-active' : ''}}"></view>
+        <text class="tab-text">{{item.text}}</text>
+      </view>
+    </block>
+  </view>
+</view>

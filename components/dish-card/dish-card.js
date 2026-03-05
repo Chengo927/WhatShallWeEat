@@ -1,8 +1,35 @@
+const DISH_PLACEHOLDER_IMAGE = '/assets/dishes/placeholder.png'
+
+function buildDishImageById(dishId) {
+  if (typeof dishId !== 'string' || !dishId) {
+    return ''
+  }
+
+  return `/assets/dishes/${dishId}.png`
+}
+
+function resolveDishImage(dish) {
+  if (!dish || typeof dish !== 'object') {
+    return DISH_PLACEHOLDER_IMAGE
+  }
+
+  const preferredImage =
+    (typeof dish.img === 'string' && dish.img) ||
+    (typeof dish.image === 'string' && dish.image) ||
+    (typeof dish.imageUrl === 'string' && dish.imageUrl) ||
+    ''
+
+  return preferredImage || buildDishImageById(dish.id) || DISH_PLACEHOLDER_IMAGE
+}
+
 Component({
   properties: {
     dish: {
       type: Object,
-      value: {}
+      value: {},
+      observer() {
+        this.syncThumbSrc()
+      }
     },
     actionText: {
       type: String,
@@ -33,7 +60,36 @@ Component({
       value: '容我想想'
     }
   },
+  data: {
+    thumbSrc: DISH_PLACEHOLDER_IMAGE
+  },
+  lifetimes: {
+    attached() {
+      this.syncThumbSrc()
+    }
+  },
   methods: {
+    syncThumbSrc() {
+      const nextThumbSrc = resolveDishImage(this.data.dish)
+      if (nextThumbSrc === this.data.thumbSrc) {
+        return
+      }
+
+      this.setData({
+        thumbSrc: nextThumbSrc
+      })
+    },
+
+    onThumbError() {
+      if (this.data.thumbSrc === DISH_PLACEHOLDER_IMAGE) {
+        return
+      }
+
+      this.setData({
+        thumbSrc: DISH_PLACEHOLDER_IMAGE
+      })
+    },
+
     onTapAction() {
       const { dish, disabled } = this.data
       if (!dish || !dish.id) {

@@ -1,0 +1,6 @@
+<view class="calendar-page">
+  <view class="calendar-card">
+    <text class="calendar-title">日历</text>
+    <text class="calendar-desc">占位页面，后续可在此接入日历详情。</text>
+  </view>
+</view>
