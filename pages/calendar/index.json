@@ -1,5 +1,8 @@
 {
   "renderer": "skyline",
   "componentFramework": "glass-easel",
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "meal-calendar": "/components/meal-calendar/index"
+  }
 }

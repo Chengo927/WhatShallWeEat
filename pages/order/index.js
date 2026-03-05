@@ -9,8 +9,7 @@ const {
   getThinkPool,
   confirmLotteryResult,
   togglePendingDishToDate,
-  removePendingDishFromDate,
-  getMealCalendarMarks
+  removePendingDishFromDate
 } = require('../../utils/storage')
 const { clampLotteryCount, drawWithoutReplacement } = require('../../utils/lottery')
 
@@ -65,23 +64,12 @@ function formatDate(dateObj) {
   return `${year}-${month}-${day}`
 }
 
-function formatDateLabel(dateStr) {
-  const matches = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr || '')
-  if (!matches) {
-    return dateStr || ''
-  }
-
-  const [, year, month, day] = matches
-  return `${year}年${Number(month)}月${Number(day)}日`
-}
-
 Page({
   data: {
     pageReady: false,
     initError: '',
     statusBarHeight: 0,
     today: '',
-    dateLabel: '--',
     searchKeyword: '',
     selectedCategory: 'all',
     categories,
@@ -90,11 +78,9 @@ Page({
     selectedDishes: [],
     thinkPool: [],
     thinkPoolCount: 0,
-    calendarMarks: {},
     visibleDishes: [],
     showSummaryPopup: false,
     showLotteryPopup: false,
-    showCalendarPopup: false,
     lotteryCount: 1,
     lotteryMaxCount: 0,
     pendingResult: [],
@@ -148,7 +134,6 @@ Page({
         {
           statusBarHeight,
           today,
-          dateLabel: formatDateLabel(today),
           initError: ''
         },
         () => {
@@ -177,7 +162,6 @@ Page({
       const safePendingIds = Array.isArray(pendingDishIds) ? pendingDishIds : []
       const thinkPool = withDishImageList(getThinkPool())
       const safeThinkPool = Array.isArray(thinkPool) ? thinkPool : []
-      const calendarMarks = getMealCalendarMarks()
       const lotteryMaxCount = safeThinkPool.length
       const nextLotteryCount = clampLotteryCount(this.data.lotteryCount, lotteryMaxCount)
       const safeLotteryCount = nextLotteryCount || 0
@@ -189,7 +173,6 @@ Page({
           selectedDishes: safeSelectedDishes,
           thinkPool: safeThinkPool,
           thinkPoolCount: lotteryMaxCount,
-          calendarMarks,
           lotteryCount: safeLotteryCount,
           lotteryMaxCount
         },
@@ -205,7 +188,6 @@ Page({
         selectedDishes: [],
         thinkPool: [],
         thinkPoolCount: 0,
-        calendarMarks: {},
         lotteryCount: 0,
         lotteryMaxCount: 0,
         pendingResult: [],
@@ -520,37 +502,6 @@ Page({
         icon: 'none'
       })
     }
-  },
-
-  onOpenCalendar() {
-    this.setData({
-      showCalendarPopup: true
-    })
-  },
-
-  onCloseCalendar() {
-    this.setData({
-      showCalendarPopup: false
-    })
-  },
-
-  onCalendarConfirm(event) {
-    const { date } = event.detail || {}
-    if (!date) {
-      this.onCloseCalendar()
-      return
-    }
-
-    this.setData(
-      {
-        today: date,
-        dateLabel: formatDateLabel(date),
-        showCalendarPopup: false
-      },
-      () => {
-        this.syncSelectedDishesSafe()
-      }
-    )
   },
 
   onCloseSummary() {

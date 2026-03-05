@@ -1,6 +1,18 @@
 <view class="calendar-page">
   <view class="calendar-card">
-    <text class="calendar-title">日历</text>
-    <text class="calendar-desc">占位页面，后续可在此接入日历详情。</text>
+    <meal-calendar value="{{selectedDate}}" marks="{{calendarMarks}}" bindchange="onCalendarChange"></meal-calendar>
+  </view>
+
+  <view class="menu-card">
+    <text class="menu-title">已选日期：{{selectedDate}}</text>
+    <view wx:if="{{selectedDishes.length}}" class="menu-list">
+      <block wx:for="{{selectedDishes}}" wx:key="id">
+        <view class="menu-item">
+          <text class="menu-item-emoji">{{item.emoji || '🍽️'}}</text>
+          <text class="menu-item-name">{{item.name}}</text>
+        </view>
+      </block>
+    </view>
+    <text wx:else class="menu-empty">当天还没有菜品</text>
   </view>
 </view>

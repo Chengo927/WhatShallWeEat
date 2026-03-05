@@ -1,0 +1,114 @@
+.meal-calendar {
+  background: #ffffff;
+}
+
+.meal-calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14rpx;
+}
+
+.meal-calendar__title {
+  color: #1f1f1f;
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.meal-calendar__title-hit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88rpx;
+  min-width: 280rpx;
+  padding: 0 24rpx;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+}
+
+.meal-calendar__title-hit--active {
+  opacity: 0.75;
+}
+
+.meal-calendar__title-arrow {
+  margin-left: 10rpx;
+  color: #707070;
+  font-size: 22rpx;
+}
+
+.meal-calendar__weekday-row {
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #f0f0f0;
+  padding: 12rpx 0;
+}
+
+.meal-calendar__weekday {
+  width: 14.2857%;
+  text-align: center;
+  color: #707070;
+  font-size: 24rpx;
+}
+
+.meal-calendar__day-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10rpx 0 0;
+}
+
+.meal-calendar__day {
+  width: 14.2857%;
+  height: 96rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 6rpx;
+  box-sizing: border-box;
+  color: #262626;
+  font-size: 28rpx;
+}
+
+.meal-calendar__day-number {
+  width: 58rpx;
+  height: 58rpx;
+  line-height: 58rpx;
+  text-align: center;
+  border-radius: 29rpx;
+}
+
+.meal-calendar__day--outside {
+  color: #b8bcc2;
+}
+
+.meal-calendar__day--selected .meal-calendar__day-number {
+  background: #00643e;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.meal-calendar__day-marks {
+  margin-top: 2rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24rpx;
+}
+
+.meal-calendar__day-mark {
+  font-size: 20rpx;
+  line-height: 1;
+}
+
+.meal-calendar__day-mark + .meal-calendar__day-mark {
+  margin-left: 2rpx;
+}
+
+.meal-calendar__day-mark--extra {
+  color: #8b8b8b;
+}
+
+.meal-calendar__day--hover {
+  opacity: 0.82;
+}

@@ -2,24 +2,65 @@
   min-height: 100vh;
   box-sizing: border-box;
   background: #f4f4f4;
-  padding: 28rpx 22rpx calc(140rpx + env(safe-area-inset-bottom));
+  padding: 24rpx 22rpx calc(140rpx + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
 .calendar-card {
   background: #ffffff;
   border-radius: 24rpx;
-  padding: 32rpx 28rpx;
+  padding: 18rpx 14rpx 20rpx;
   box-sizing: border-box;
 }
 
-.calendar-title {
+.menu-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+.menu-title {
   display: block;
   color: #1f1f1f;
-  font-size: 34rpx;
+  font-size: 30rpx;
   font-weight: 700;
 }
 
-.calendar-desc {
+.menu-list {
+  margin-top: 14rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  min-height: 64rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 8rpx 0;
+}
+
+.menu-item + .menu-item {
+  border-top: 1rpx solid #f1f1f1;
+}
+
+.menu-item-emoji {
+  font-size: 30rpx;
+  line-height: 1;
+}
+
+.menu-item-name {
+  flex: 1;
+  min-width: 0;
+  color: #1f1f1f;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.menu-empty {
   display: block;
   margin-top: 14rpx;
   color: #6f6f6f;
