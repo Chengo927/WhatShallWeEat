@@ -1,7 +1,15 @@
 const sourceData = require('../../data/dishes') || {}
 const categories = Array.isArray(sourceData.categories) ? sourceData.categories : []
 const dishes = Array.isArray(sourceData.dishes) ? sourceData.dishes : []
-const { addDishToDate, getSelectedDishIds, getMealCalendarMarks } = require('../../utils/storage')
+const {
+  addDishToDate,
+  removeDishFromDate,
+  getSelectedDishIds,
+  getPendingDishIds,
+  togglePendingDishToDate,
+  removePendingDishFromDate,
+  getMealCalendarMarks
+} = require('../../utils/storage')
 
 const DISH_MAP = dishes.reduce((accumulator, dish) => {
   if (dish && dish.id) {
@@ -38,6 +46,7 @@ Page({
     selectedCategory: 'all',
     categories,
     selectedDishIds: [],
+    pendingDishIds: [],
     selectedDishes: [],
     calendarMarks: {},
     visibleDishes: [],
@@ -99,6 +108,8 @@ Page({
     try {
       const selectedDishIds = getSelectedDishIds(this.data.today)
       const safeIds = Array.isArray(selectedDishIds) ? selectedDishIds : []
+      const pendingDishIds = getPendingDishIds(this.data.today)
+      const safePendingIds = Array.isArray(pendingDishIds) ? pendingDishIds : []
       const calendarMarks = getMealCalendarMarks()
       const selectedDishes = safeIds
         .map((dishId) => DISH_MAP[dishId])
@@ -107,6 +118,7 @@ Page({
       this.setData(
         {
           selectedDishIds: safeIds,
+          pendingDishIds: safePendingIds,
           selectedDishes,
           calendarMarks
         },
@@ -118,6 +130,7 @@ Page({
       console.error('[order] syncSelectedDishes failed', error)
       this.setData({
         selectedDishIds: [],
+        pendingDishIds: [],
         selectedDishes: [],
         calendarMarks: {},
         visibleDishes: []
@@ -153,11 +166,19 @@ Page({
       const selectedCategory = this.data.selectedCategory
       const keyword = (this.data.searchKeyword || '').trim().toLowerCase()
       const selectedMap = {}
+      const pendingMap = {}
       const selectedIds = Array.isArray(this.data.selectedDishIds) ? this.data.selectedDishIds : []
+      const pendingIds = Array.isArray(this.data.pendingDishIds) ? this.data.pendingDishIds : []
 
       selectedIds.forEach((dishId) => {
         if (dishId) {
           selectedMap[dishId] = true
+        }
+      })
+
+      pendingIds.forEach((dishId) => {
+        if (dishId) {
+          pendingMap[dishId] = true
         }
       })
 
@@ -174,7 +195,8 @@ Page({
         .map((dish) => {
           return {
             ...dish,
-            added: !!selectedMap[dish.id]
+            added: !!selectedMap[dish.id],
+            pending: !!pendingMap[dish.id]
           }
         })
 
@@ -191,17 +213,46 @@ Page({
 
   onAddDish(event) {
     try {
-      const { dishId } = event.detail || {}
-      const isAdded = addDishToDate(this.data.today, dishId)
-      wx.showToast({
-        title: isAdded ? '已加入' : '已加入今日菜单',
-        icon: isAdded ? 'success' : 'none'
-      })
+      const { dishId, added } = event.detail || {}
+      if (added) {
+        const removed = removeDishFromDate(this.data.today, dishId)
+        wx.showToast({
+          title: removed ? '已取消' : '取消失败',
+          icon: removed ? 'success' : 'none'
+        })
+      } else {
+        const created = addDishToDate(this.data.today, dishId)
+        if (created) {
+          removePendingDishFromDate(this.data.today, dishId)
+        }
+        wx.showToast({
+          title: created ? '已加入' : '已加入今日菜单',
+          icon: created ? 'success' : 'none'
+        })
+      }
       this.syncSelectedDishesSafe()
     } catch (error) {
       console.error('[order] onAddDish failed', error)
       wx.showToast({
-        title: '加入失败，请重试',
+        title: '操作失败，请重试',
+        icon: 'none'
+      })
+    }
+  },
+
+  onTogglePending(event) {
+    try {
+      const { dishId } = event.detail || {}
+      const isPending = togglePendingDishToDate(this.data.today, dishId)
+      wx.showToast({
+        title: isPending ? '已设为待选' : '已取消待选',
+        icon: 'success'
+      })
+      this.syncSelectedDishesSafe()
+    } catch (error) {
+      console.error('[order] onTogglePending failed', error)
+      wx.showToast({
+        title: '操作失败，请重试',
         icon: 'none'
       })
     }

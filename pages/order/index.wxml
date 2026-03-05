@@ -52,8 +52,10 @@
           <dish-card
             dish="{{item}}"
             disabled="{{item.added}}"
+            pending="{{item.pending}}"
             action-text="加入"
             bindaction="onAddDish"
+            bindpendingaction="onTogglePending"
           ></dish-card>
         </block>
         <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>

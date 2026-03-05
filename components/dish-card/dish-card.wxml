@@ -14,10 +14,18 @@
     <text class="dish-desc">{{dish.desc}}</text>
   </view>
 
-  <view
-    class="action-btn {{actionVariant === 'danger' ? 'action-btn-danger' : ''}} {{disabled ? 'action-btn-disabled' : ''}}"
-    bindtap="onTapAction"
-  >
-    {{disabled ? disabledText : actionText}}
+  <view class="action-wrap">
+    <view
+      class="action-btn {{actionVariant === 'danger' ? 'action-btn-danger' : ''}} {{disabled ? 'action-btn-disabled' : ''}}"
+      bindtap="onTapAction"
+    >
+      {{disabled ? disabledText : actionText}}
+    </view>
+    <view
+      class="pending-btn {{pending ? 'pending-btn-active' : ''}}"
+      bindtap="onTapPending"
+    >
+      {{pending ? pendingActiveText : pendingText}}
+    </view>
   </view>
 </view>

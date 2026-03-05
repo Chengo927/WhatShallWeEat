@@ -1,6 +1,7 @@
 const { dishes, categoryMap } = require('../data/dishes')
 
 const STORAGE_KEY = 'MEAL_PLAN_BY_DATE'
+const PENDING_STORAGE_KEY = 'MEAL_PENDING_BY_DATE'
 const CALENDAR_MARKS_STORAGE_KEY = 'meal_calendar_marks_v1'
 
 function getCategoryEmoji(categoryId) {
@@ -99,9 +100,24 @@ function getMealPlanByDate() {
   }
 }
 
+function getPendingPlanByDate() {
+  try {
+    const rawValue = wx.getStorageSync(PENDING_STORAGE_KEY)
+    return normalizeStorageMap(rawValue)
+  } catch (error) {
+    return {}
+  }
+}
+
 function setMealPlanByDate(planByDate) {
   const safeValue = normalizeStorageMap(planByDate)
   wx.setStorageSync(STORAGE_KEY, safeValue)
+  return safeValue
+}
+
+function setPendingPlanByDate(planByDate) {
+  const safeValue = normalizeStorageMap(planByDate)
+  wx.setStorageSync(PENDING_STORAGE_KEY, safeValue)
   return safeValue
 }
 
@@ -169,6 +185,15 @@ function getSelectedDishIds(dateStr) {
   return Array.isArray(ids) ? ids : []
 }
 
+function getPendingDishIds(dateStr) {
+  if (!dateStr) {
+    return []
+  }
+  const planByDate = getPendingPlanByDate()
+  const ids = planByDate[dateStr]
+  return Array.isArray(ids) ? ids : []
+}
+
 function addDishToDate(dateStr, dishId) {
   if (!dateStr || !dishId) {
     return false
@@ -183,6 +208,49 @@ function addDishToDate(dateStr, dishId) {
   planByDate[dateStr] = currentIds.concat(dishId)
   const safePlan = setMealPlanByDate(planByDate)
   refreshMealCalendarMarks(safePlan)
+  return true
+}
+
+function removePendingDishFromDate(dateStr, dishId) {
+  if (!dateStr || !dishId) {
+    return false
+  }
+
+  const planByDate = getPendingPlanByDate()
+  const currentIds = planByDate[dateStr]
+  if (!Array.isArray(currentIds) || !currentIds.length) {
+    return false
+  }
+
+  const nextIds = currentIds.filter((id) => id !== dishId)
+  if (nextIds.length === currentIds.length) {
+    return false
+  }
+
+  if (nextIds.length) {
+    planByDate[dateStr] = nextIds
+  } else {
+    delete planByDate[dateStr]
+  }
+
+  setPendingPlanByDate(planByDate)
+  return true
+}
+
+function togglePendingDishToDate(dateStr, dishId) {
+  if (!dateStr || !dishId) {
+    return false
+  }
+
+  const planByDate = getPendingPlanByDate()
+  const currentIds = planByDate[dateStr] || []
+  if (currentIds.includes(dishId)) {
+    removePendingDishFromDate(dateStr, dishId)
+    return false
+  }
+
+  planByDate[dateStr] = currentIds.concat(dishId)
+  setPendingPlanByDate(planByDate)
   return true
 }
 
@@ -215,11 +283,16 @@ function removeDishFromDate(dateStr, dishId) {
 
 module.exports = {
   STORAGE_KEY,
+  PENDING_STORAGE_KEY,
   CALENDAR_MARKS_STORAGE_KEY,
   getMealPlanByDate,
+  getPendingPlanByDate,
   getMealCalendarMarks,
   getSelectedDishIds,
+  getPendingDishIds,
   addDishToDate,
+  togglePendingDishToDate,
+  removePendingDishFromDate,
   removeDishFromDate,
   refreshMealCalendarMarks
 }

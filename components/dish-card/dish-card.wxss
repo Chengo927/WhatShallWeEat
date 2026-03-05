@@ -46,12 +46,20 @@
   line-height: 1.4;
 }
 
+.action-wrap {
+  flex-shrink: 0;
+  margin-top: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10rpx;
+}
+
 .action-btn {
   flex-shrink: 0;
   min-width: 112rpx;
   height: 52rpx;
   line-height: 52rpx;
-  margin-top: 12rpx;
   padding: 0 20rpx;
   text-align: center;
   color: #00643e;
@@ -60,7 +68,6 @@
   border: 1rpx solid #00643e;
   border-radius: 26rpx;
   box-sizing: border-box;
-  align-self: center;
 }
 
 .action-btn-danger {
@@ -72,4 +79,24 @@
   color: #9f9f9f;
   border-color: transparent;
   background: #f3f3f3;
+}
+
+.pending-btn {
+  min-width: 112rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  padding: 0 18rpx;
+  text-align: center;
+  color: #3d6b6b;
+  font-size: 22rpx;
+  border: 1rpx solid #8fb7b7;
+  border-radius: 24rpx;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.pending-btn-active {
+  color: #0e6f63;
+  border-color: #0e6f63;
+  background: #e8f7f4;
 }
