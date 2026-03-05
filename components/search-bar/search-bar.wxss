@@ -1,0 +1,22 @@
+.search-bar {
+  height: 74rpx;
+  border: 2rpx solid #dddddd;
+  border-radius: 20rpx;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  font-size: 34rpx;
+  color: #6f6f6f;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: #2d2d2d;
+}

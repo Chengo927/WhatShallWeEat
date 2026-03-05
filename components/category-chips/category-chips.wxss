@@ -1,0 +1,31 @@
+.chips-scroll {
+  white-space: nowrap;
+}
+
+.chips-row {
+  display: flex;
+  gap: 18rpx;
+  padding: 10rpx 0 16rpx;
+}
+
+.chip {
+  width: 210rpx;
+  height: 170rpx;
+  border-radius: 24rpx;
+  background: #1aa570;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 28rpx;
+  box-sizing: border-box;
+}
+
+.chip-active {
+  background: #00643e;
+}
+
+.chip-text {
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 700;
+}

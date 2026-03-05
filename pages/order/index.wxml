@@ -1,0 +1,27 @@
+<view class="order-page">
+  <view class="status-placeholder" style="height: {{statusBarHeight}}px;"></view>
+
+  <text class="page-title">今天吃什么呢？</text>
+
+  <view class="search-wrap">
+    <search-bar value="{{searchKeyword}}" placeholder="Search" bindchange="onSearchChange"></search-bar>
+  </view>
+
+  <category-chips
+    categories="{{categories}}"
+    selected="{{selectedCategory}}"
+    bindchange="onCategoryChange"
+  ></category-chips>
+
+  <view class="dish-list">
+    <block wx:for="{{visibleDishes}}" wx:key="id">
+      <dish-card
+        dish="{{item}}"
+        disabled="{{item.added}}"
+        action-text="加入"
+        bindaction="onAddDish"
+      ></dish-card>
+    </block>
+    <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>
+  </view>
+</view>

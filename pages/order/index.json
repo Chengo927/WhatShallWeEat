@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "dish-card": "/components/dish-card/dish-card",
+    "category-chips": "/components/category-chips/category-chips",
+    "search-bar": "/components/search-bar/search-bar"
+  }
+}

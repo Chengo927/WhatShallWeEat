@@ -1,0 +1,33 @@
+.order-page {
+  min-height: 100vh;
+  background: #f4f4f4;
+  padding: 0 22rpx 48rpx;
+  box-sizing: border-box;
+}
+
+.status-placeholder {
+  width: 100%;
+}
+
+.page-title {
+  display: block;
+  margin-top: 24rpx;
+  color: #00643e;
+  font-size: 56rpx;
+  font-weight: 700;
+}
+
+.search-wrap {
+  margin-top: 28rpx;
+}
+
+.dish-list {
+  margin-top: 22rpx;
+}
+
+.empty-state {
+  text-align: center;
+  color: #8f8f8f;
+  font-size: 28rpx;
+  padding: 80rpx 0;
+}
