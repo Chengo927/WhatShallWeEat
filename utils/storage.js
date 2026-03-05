@@ -448,6 +448,40 @@ function setLastLotteryResult(dateStr, dishList) {
   return safeList
 }
 
+function confirmLotteryResult(dateStr, pendingResult) {
+  if (!isValidDateStr(dateStr)) {
+    return {
+      success: false,
+      addedCount: 0,
+      menu: [],
+      finalResult: []
+    }
+  }
+
+  const safePendingResult = normalizeDishList(pendingResult)
+  if (!safePendingResult.length) {
+    return {
+      success: false,
+      addedCount: 0,
+      menu: getTodayMenu(dateStr),
+      finalResult: []
+    }
+  }
+
+  const appendResult = appendDishesToDate(dateStr, safePendingResult)
+  const finalResult = setLastLotteryResult(dateStr, safePendingResult)
+  const addedCount =
+    appendResult && typeof appendResult.addedCount === 'number' ? appendResult.addedCount : 0
+  const menu = appendResult && Array.isArray(appendResult.menu) ? appendResult.menu : getTodayMenu(dateStr)
+
+  return {
+    success: true,
+    addedCount,
+    menu,
+    finalResult
+  }
+}
+
 function getMealPlanByDate() {
   const legacyMap = readLegacyMap(STORAGE_KEY)
   const mergedMap = { ...legacyMap }
@@ -644,6 +678,7 @@ module.exports = {
   appendDishesToDate,
   getLastLotteryResult,
   setLastLotteryResult,
+  confirmLotteryResult,
   addDishToDate,
   togglePendingDishToDate,
   removePendingDishFromDate,

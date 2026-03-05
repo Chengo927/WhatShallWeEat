@@ -7,9 +7,7 @@ const {
   getTodayMenu,
   getPendingDishIds,
   getThinkPool,
-  appendDishesToDate,
-  getLastLotteryResult,
-  setLastLotteryResult,
+  confirmLotteryResult,
   togglePendingDishToDate,
   removePendingDishFromDate,
   getMealCalendarMarks
@@ -55,7 +53,9 @@ Page({
     showCalendarPopup: false,
     lotteryCount: 1,
     lotteryMaxCount: 0,
-    lotteryResult: [],
+    pendingResult: [],
+    hasDrawn: false,
+    selectedK: 0,
     bottomHint: '上滑查看更多菜品'
   },
 
@@ -120,7 +120,7 @@ Page({
       const calendarMarks = getMealCalendarMarks()
       const lotteryMaxCount = safeThinkPool.length
       const nextLotteryCount = clampLotteryCount(this.data.lotteryCount, lotteryMaxCount)
-      const lotteryResult = getLastLotteryResult(this.data.today)
+      const safeLotteryCount = nextLotteryCount || 0
 
       this.setData(
         {
@@ -130,9 +130,8 @@ Page({
           thinkPool: safeThinkPool,
           thinkPoolCount: lotteryMaxCount,
           calendarMarks,
-          lotteryCount: nextLotteryCount || 0,
-          lotteryMaxCount,
-          lotteryResult: Array.isArray(lotteryResult) ? lotteryResult : []
+          lotteryCount: safeLotteryCount,
+          lotteryMaxCount
         },
         () => {
           this.applyFiltersSafe()
@@ -149,7 +148,9 @@ Page({
         calendarMarks: {},
         lotteryCount: 0,
         lotteryMaxCount: 0,
-        lotteryResult: [],
+        pendingResult: [],
+        hasDrawn: false,
+        selectedK: 0,
         visibleDishes: []
       })
     }
@@ -294,13 +295,19 @@ Page({
     this.setData({
       showLotteryPopup: true,
       lotteryMaxCount: maxCount,
-      lotteryCount: clampLotteryCount(this.data.lotteryCount, maxCount)
+      lotteryCount: clampLotteryCount(this.data.lotteryCount, maxCount),
+      pendingResult: [],
+      hasDrawn: false,
+      selectedK: 0
     })
   },
 
   onCloseLottery() {
     this.setData({
-      showLotteryPopup: false
+      showLotteryPopup: false,
+      pendingResult: [],
+      hasDrawn: false,
+      selectedK: 0
     })
   },
 
@@ -311,8 +318,12 @@ Page({
     }
 
     const current = clampLotteryCount(this.data.lotteryCount, maxCount)
+    const nextCount = Math.max(1, current - 1)
     this.setData({
-      lotteryCount: Math.max(1, current - 1)
+      lotteryCount: nextCount,
+      pendingResult: [],
+      hasDrawn: false,
+      selectedK: 0
     })
   },
 
@@ -323,8 +334,12 @@ Page({
     }
 
     const current = clampLotteryCount(this.data.lotteryCount, maxCount)
+    const nextCount = Math.min(maxCount, current + 1)
     this.setData({
-      lotteryCount: Math.min(maxCount, current + 1)
+      lotteryCount: nextCount,
+      pendingResult: [],
+      hasDrawn: false,
+      selectedK: 0
     })
   },
 
@@ -332,12 +347,16 @@ Page({
     const rawValue = event && event.detail ? event.detail.value : ''
     const inputCount = Number(rawValue) || 0
     const maxCount = Number(this.data.lotteryMaxCount) || 0
+    const nextCount = clampLotteryCount(inputCount, maxCount)
     this.setData({
-      lotteryCount: clampLotteryCount(inputCount, maxCount)
+      lotteryCount: nextCount,
+      pendingResult: [],
+      hasDrawn: false,
+      selectedK: 0
     })
   },
 
-  onStartLottery() {
+  runLotteryDraw() {
     try {
       const thinkPool = Array.isArray(this.data.thinkPool) ? this.data.thinkPool : []
       const poolSize = thinkPool.length
@@ -358,33 +377,81 @@ Page({
         return
       }
 
-      const lotteryResult = drawWithoutReplacement(thinkPool, lotteryCount)
-      setLastLotteryResult(this.data.today, lotteryResult)
-      const appendResult = appendDishesToDate(this.data.today, lotteryResult)
-      const addedCount =
-        appendResult && typeof appendResult.addedCount === 'number' ? appendResult.addedCount : 0
+      const pendingResult = drawWithoutReplacement(thinkPool, lotteryCount)
 
       this.setData({
         lotteryCount,
-        lotteryResult
+        pendingResult,
+        hasDrawn: true,
+        selectedK: lotteryCount
       })
-      this.syncSelectedDishesSafe()
-
-      let toastTitle = '抽奖完成'
-      if (addedCount > 0) {
-        toastTitle = `新增${addedCount}道菜`
-      } else {
-        toastTitle = '结果已在今日菜单'
-      }
-
       wx.showToast({
-        title: toastTitle,
+        title: '抽奖完成，请确认',
         icon: 'none'
       })
     } catch (error) {
-      console.error('[order] onStartLottery failed', error)
+      console.error('[order] runLotteryDraw failed', error)
       wx.showToast({
         title: '抽奖失败，请重试',
+        icon: 'none'
+      })
+    }
+  },
+
+  onStartLottery() {
+    this.runLotteryDraw()
+  },
+
+  onRedrawLottery() {
+    if (!this.data.hasDrawn) {
+      wx.showToast({
+        title: '请先开始抽奖',
+        icon: 'none'
+      })
+      return
+    }
+    this.runLotteryDraw()
+  },
+
+  onConfirmLottery() {
+    const pendingResult = Array.isArray(this.data.pendingResult) ? this.data.pendingResult : []
+    const hasValidResult = this.data.hasDrawn && pendingResult.length > 0
+
+    if (!hasValidResult || this.data.selectedK !== this.data.lotteryCount) {
+      wx.showToast({
+        title: '请先抽一次',
+        icon: 'none'
+      })
+      return
+    }
+
+    try {
+      const result = confirmLotteryResult(this.data.today, pendingResult)
+      if (!result || !result.success) {
+        wx.showToast({
+          title: '结果无效，请重抽',
+          icon: 'none'
+        })
+        return
+      }
+
+      const addedCount = Number(result.addedCount) || 0
+      this.setData({
+        showLotteryPopup: false,
+        pendingResult: [],
+        hasDrawn: false,
+        selectedK: 0
+      })
+      this.syncSelectedDishesSafe()
+
+      wx.showToast({
+        title: addedCount > 0 ? `新增${addedCount}道菜` : '已写入抽奖结果',
+        icon: 'none'
+      })
+    } catch (error) {
+      console.error('[order] onConfirmLottery failed', error)
+      wx.showToast({
+        title: '确认失败，请重试',
         icon: 'none'
       })
     }
@@ -424,7 +491,10 @@ Page({
   onCloseSummary() {
     this.setData({
       showSummaryPopup: false,
-      showLotteryPopup: false
+      showLotteryPopup: false,
+      pendingResult: [],
+      hasDrawn: false,
+      selectedK: 0
     })
   },
 

@@ -118,13 +118,27 @@
           <view class="lottery-stepper-btn" bindtap="onIncreaseLotteryCount">+</view>
         </view>
       </view>
-      <text class="lottery-tip">默认自动加入今日菜单（自动去重）</text>
-      <view class="lottery-start-btn" bindtap="onStartLottery">开始抽奖</view>
+      <text class="lottery-tip">开始/再抽只预览，点击“确定”才写入今日菜单</text>
+      <view class="lottery-action-row">
+        <view class="lottery-action-btn lottery-action-btn-ghost" bindtap="onStartLottery">开始抽奖</view>
+        <view
+          class="lottery-action-btn lottery-action-btn-ghost {{hasDrawn ? '' : 'lottery-action-btn-disabled'}}"
+          bindtap="onRedrawLottery"
+        >
+          再抽一次
+        </view>
+      </view>
+      <view
+        class="lottery-confirm-btn {{hasDrawn && pendingResult.length ? '' : 'lottery-confirm-btn-disabled'}}"
+        bindtap="onConfirmLottery"
+      >
+        确定
+      </view>
     </view>
     <scroll-view class="lottery-result-scroll" scroll-y>
       <text class="lottery-result-title">抽奖结果</text>
-      <view wx:if="{{!lotteryResult.length}}" class="lottery-empty">点击开始抽奖后显示结果</view>
-      <block wx:for="{{lotteryResult}}" wx:key="id">
+      <view wx:if="{{!pendingResult.length}}" class="lottery-empty">点击开始抽奖后显示结果</view>
+      <block wx:for="{{pendingResult}}" wx:key="id">
         <view class="lottery-item">
           <text class="lottery-item-emoji">{{item.emoji || '🍽️'}}</text>
           <text class="lottery-item-name">{{item.name}}</text>

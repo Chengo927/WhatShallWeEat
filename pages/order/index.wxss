@@ -390,8 +390,36 @@ page {
   font-size: 24rpx;
 }
 
-.lottery-start-btn {
-  margin-top: 18rpx;
+.lottery-action-row {
+  margin-top: 16rpx;
+  display: flex;
+  gap: 14rpx;
+}
+
+.lottery-action-btn {
+  flex: 1;
+  height: 66rpx;
+  line-height: 66rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: 34rpx;
+}
+
+.lottery-action-btn-ghost {
+  color: #d34b4b;
+  border: 1rpx solid #d34b4b;
+  background: #fff5f5;
+}
+
+.lottery-action-btn-disabled {
+  color: #ae9999;
+  border-color: #e7d7d7;
+  background: #f6eeee;
+}
+
+.lottery-confirm-btn {
+  margin-top: 14rpx;
   height: 66rpx;
   line-height: 66rpx;
   text-align: center;
@@ -400,6 +428,11 @@ page {
   font-weight: 600;
   border-radius: 34rpx;
   background: #d34b4b;
+}
+
+.lottery-confirm-btn-disabled {
+  background: #e1c8c8;
+  color: #f7f1f1;
 }
 
 .lottery-result-scroll {
