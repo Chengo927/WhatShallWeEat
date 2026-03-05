@@ -7,6 +7,10 @@ Component({
     selected: {
       type: String,
       value: 'all'
+    },
+    vertical: {
+      type: Boolean,
+      value: false
     }
   },
   methods: {

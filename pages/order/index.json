@@ -1,5 +1,6 @@
 {
   "renderer": "skyline",
+  "componentFramework": "glass-easel",
   "navigationStyle": "custom",
   "usingComponents": {
     "dish-card": "/components/dish-card/dish-card",

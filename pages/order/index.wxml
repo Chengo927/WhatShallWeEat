@@ -1,37 +1,45 @@
 <view class="order-page">
   <view class="status-placeholder" style="height: {{statusBarHeight}}px;"></view>
-  <scroll-view
-    class="main-scroll"
-    scroll-y
-    enhanced
-    show-scrollbar="{{false}}"
-    bindscrolltolower="onScrollToLower"
-  >
-    <text class="page-title">今天吃什么呢？</text>
 
+  <view class="page-head">
+    <text class="page-title">今天吃什么呢？</text>
     <view class="search-wrap">
       <search-bar value="{{searchKeyword}}" placeholder="Search" bindchange="onSearchChange"></search-bar>
     </view>
+  </view>
 
-    <category-chips
-      categories="{{categories}}"
-      selected="{{selectedCategory}}"
-      bindchange="onCategoryChange"
-    ></category-chips>
-
-    <view class="dish-list">
-      <block wx:for="{{visibleDishes}}" wx:key="id">
-        <dish-card
-          dish="{{item}}"
-          disabled="{{item.added}}"
-          action-text="加入"
-          bindaction="onAddDish"
-        ></dish-card>
-      </block>
-      <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>
-      <view class="bottom-reached-hint">{{bottomHint}}</view>
+  <view class="content-wrap">
+    <view class="category-pane">
+      <category-chips
+        categories="{{categories}}"
+        selected="{{selectedCategory}}"
+        vertical="{{true}}"
+        bindchange="onCategoryChange"
+      ></category-chips>
     </view>
-  </scroll-view>
+
+    <scroll-view
+      class="dish-scroll"
+      scroll-y
+      enhanced
+      show-scrollbar="{{false}}"
+      bindscrolltolower="onScrollToLower"
+    >
+      <view class="dish-list">
+        <block wx:for="{{visibleDishes}}" wx:key="id">
+          <dish-card
+            dish="{{item}}"
+            disabled="{{item.added}}"
+            action-text="加入"
+            bindaction="onAddDish"
+          ></dish-card>
+        </block>
+        <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>
+        <view class="bottom-reached-hint">{{bottomHint}}</view>
+        <view class="list-bottom-spacer"></view>
+      </view>
+    </scroll-view>
+  </view>
 
   <view class="bottom-bar">
     <text class="bottom-count">今日已选 {{selectedDishIds.length}} 道</text>
