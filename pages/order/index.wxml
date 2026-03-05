@@ -53,7 +53,7 @@
             dish="{{item}}"
             disabled="{{item.added}}"
             pending="{{item.pending}}"
-            action-text="加入"
+            action-text="大吃特吃"
             bindaction="onAddDish"
             bindpendingaction="onTogglePending"
           ></dish-card>
@@ -83,7 +83,6 @@
       <block wx:for="{{selectedDishes}}" wx:key="id">
         <view class="popup-item">
           <text class="popup-item-name">{{item.name}}</text>
-          <text class="popup-item-desc">{{item.desc}}</text>
         </view>
       </block>
     </scroll-view>

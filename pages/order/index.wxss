@@ -255,11 +255,3 @@ page {
   color: #151515;
   font-weight: 600;
 }
-
-.popup-item-desc {
-  display: block;
-  margin-top: 6rpx;
-  font-size: 24rpx;
-  color: #8d8d8d;
-  line-height: 1.4;
-}

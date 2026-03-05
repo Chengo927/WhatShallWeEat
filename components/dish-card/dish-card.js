@@ -6,7 +6,7 @@ Component({
     },
     actionText: {
       type: String,
-      value: '加入'
+      value: '大吃特吃'
     },
     actionVariant: {
       type: String,
@@ -26,11 +26,11 @@ Component({
     },
     pendingText: {
       type: String,
-      value: '待选'
+      value: '容我想想'
     },
     pendingActiveText: {
       type: String,
-      value: '待选中'
+      value: '容我想想'
     }
   },
   methods: {
