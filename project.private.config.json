@@ -1,11 +1,11 @@
 {
-  "libVersion": "3.14.3",
+  "libVersion": "3.14.2",
   "projectname": "WhatShallWeEat",
   "setting": {
     "urlCheck": true,
     "coverView": true,
     "lazyloadPlaceholderEnable": false,
-    "skylineRenderEnable": false,
+    "skylineRenderEnable": true,
     "preloadBackgroundData": false,
     "autoAudits": false,
     "showShadowRootInWxmlPanel": true,

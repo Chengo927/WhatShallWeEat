@@ -1,4 +1,13 @@
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# WeChat DevTools
+project.private.config.json
+*.wxapkg
+
+# Node / npm（如果你将来用到）
 node_modules/
 miniprogram_npm/
-project.private.config.json
-.DS_Store
+npm-debug.log*
+pnpm-debug.log*
