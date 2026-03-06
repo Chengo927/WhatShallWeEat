@@ -71,11 +71,52 @@ function attachDishImages(dishList, imageFallbackMap) {
     }))
 }
 
+function resolveNavLayout() {
+  const fallbackMenuHeight = 32
+  const fallbackMenuGap = 8
+  const fallbackCapsuleWidth = 96
+  const systemInfo = typeof wx.getSystemInfoSync === 'function' ? wx.getSystemInfoSync() : {}
+  const statusBarHeight = Number(systemInfo.statusBarHeight) || 0
+  const screenWidth = Number(systemInfo.screenWidth) || Number(systemInfo.windowWidth) || 375
+  const menuRect =
+    typeof wx.getMenuButtonBoundingClientRect === 'function'
+      ? wx.getMenuButtonBoundingClientRect()
+      : null
+  const hasMenuRect =
+    !!menuRect &&
+    Number(menuRect.left) > 0 &&
+    Number(menuRect.width) > 0 &&
+    Number(menuRect.height) > 0
+  const menuTop = hasMenuRect
+    ? Number(menuRect.top) || statusBarHeight + fallbackMenuGap
+    : statusBarHeight + fallbackMenuGap
+  const menuHeight = hasMenuRect
+    ? Number(menuRect.height) || fallbackMenuHeight
+    : fallbackMenuHeight
+  const menuLeft = hasMenuRect
+    ? Number(menuRect.left) || screenWidth - fallbackCapsuleWidth
+    : screenWidth - fallbackCapsuleWidth
+  const navVerticalGap = Math.max(0, menuTop - statusBarHeight)
+  const navBarHeight = statusBarHeight + navVerticalGap * 2 + menuHeight
+
+  return {
+    statusBarHeight,
+    navBarHeight,
+    menuButtonTop: menuTop,
+    menuButtonHeight: menuHeight,
+    capsulePlaceholderWidth: Math.max(0, screenWidth - menuLeft)
+  }
+}
+
 Page({
   data: {
     pageReady: false,
     initError: '',
     statusBarHeight: 0,
+    navBarHeight: 0,
+    menuButtonTop: 0,
+    menuButtonHeight: 32,
+    capsulePlaceholderWidth: 96,
     today: '',
     dateLabel: '--',
     searchKeyword: '',
@@ -114,21 +155,12 @@ Page({
 
   initPageData() {
     try {
-      const windowInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : {}
-      const rawStatusBarHeight = Number(windowInfo.statusBarHeight) || 0
-      const menuRect =
-        typeof wx.getMenuButtonBoundingClientRect === 'function'
-          ? wx.getMenuButtonBoundingClientRect()
-          : null
-      const statusBarHeight =
-        menuRect && menuRect.top && menuRect.bottom
-          ? Number(menuRect.bottom + menuRect.top - rawStatusBarHeight) || rawStatusBarHeight + 44
-          : rawStatusBarHeight + 44
+      const navLayout = resolveNavLayout()
       const today = formatDate(new Date())
 
       this.setData(
         {
-          statusBarHeight,
+          ...navLayout,
           today,
           dateLabel: formatDateLabel(today),
           initError: ''

@@ -8,37 +8,64 @@
   overflow: hidden;
 }
 
-.status-placeholder {
+.custom-header {
   flex-shrink: 0;
   width: 100%;
+  padding: 0 22rpx;
+  box-sizing: border-box;
+}
+
+.custom-header-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.custom-header-title-wrap {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  padding: 0 20rpx;
+  border-radius: 18rpx;
+  background: #f9d95a;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.custom-header-title {
+  color: #00643e;
+  font-size: 56rpx;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-header-placeholder {
+  flex-shrink: 0;
+  height: 100%;
 }
 
 .page-head {
   flex-shrink: 0;
-  padding: 0 22rpx 22rpx;
+  padding: 8rpx 22rpx 16rpx;
   box-sizing: border-box;
 }
 
-.page-head-main {
-  margin-top: 24rpx;
+.page-head-meta {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16rpx;
 }
 
-.page-title {
-  flex: 1;
-  min-width: 0;
-  color: #00643e;
-  font-size: 56rpx;
-  font-weight: 700;
-}
-
 .calendar-entry {
-  width: 92rpx;
-  height: 92rpx;
-  border-radius: 24rpx;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
   background: #ffffff;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
   display: flex;
@@ -52,43 +79,43 @@
 }
 
 .calendar-icon {
-  width: 48rpx;
-  height: 54rpx;
+  width: 40rpx;
+  height: 44rpx;
   border: 3rpx solid #00643e;
-  border-radius: 10rpx;
+  border-radius: 8rpx;
   overflow: hidden;
   box-sizing: border-box;
 }
 
 .calendar-icon__top {
-  height: 12rpx;
+  height: 10rpx;
   background: #00643e;
 }
 
 .calendar-icon__grid {
-  padding: 8rpx 6rpx 0;
+  padding: 6rpx 4rpx 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 4rpx;
+  gap: 3rpx;
   box-sizing: border-box;
 }
 
 .calendar-icon__dot {
-  width: 8rpx;
-  height: 8rpx;
+  width: 7rpx;
+  height: 7rpx;
   border-radius: 50%;
   background: rgba(0, 100, 62, 0.55);
 }
 
 .selected-date {
-  display: block;
-  margin-top: 10rpx;
+  flex: 1;
+  min-width: 0;
   color: #6f6f6f;
   font-size: 24rpx;
 }
 
 .search-wrap {
-  margin-top: 20rpx;
+  margin-top: 12rpx;
 }
 
 .content-wrap {

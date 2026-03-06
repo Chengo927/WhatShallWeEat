@@ -1,6 +1,6 @@
 # WhatShallWeEat 项目上下文（给 Agent 快速加载）
 
-最后更新：2026-03-05
+最后更新：2026-03-06
 
 ## 1) 项目是做什么的
 - 这是一个微信小程序，用于解决“今天吃什么”决策问题。
@@ -36,7 +36,8 @@
 
 ## 5) 关键流程（简版）
 1. 页面初始化
-- 计算状态栏高度，确定默认日期（今天），拉取该日期菜单/候选池/日历标记，生成可见菜品列表。
+- 通过 `wx.getSystemInfoSync + wx.getMenuButtonBoundingClientRect` 计算 `navBarHeight` 与胶囊避让宽度，生成菜单页自定义头部布局参数。
+- 确定默认日期（今天），拉取该日期菜单/候选池/日历标记，生成可见菜品列表。
 
 2. 点菜
 - 点击“加入”调用 `addDishToDate(date, dishId)`。
@@ -107,6 +108,20 @@
 - 风险与回滚点：
 
 ## 10) 变更日志
+- 日期：2026-03-06
+- 目标：菜单页标题与系统胶囊按钮纵向对齐，并整体上移搜索/列表区域（Skyline）。
+- 改动文件：`pages/order/index.js`、`pages/order/index.wxml`、`pages/order/index.wxss`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 菜单页顶部改为自定义 header：左侧标题、右侧胶囊占位（宽度动态取 `screenWidth - menuRect.left`），避免标题被系统胶囊覆盖。
+  - 使用动态导航参数（`navBarHeight/menuButtonTop/menuButtonHeight`）控制标题行与胶囊同一视觉水平线。
+  - 清理原先顶部占位 + 大间距写死样式，日期行、搜索框、分类与列表整体上移。
+- 验证步骤：
+  - 打开【菜单】Tab，确认“今天吃什么呢？”与右上角胶囊按钮处于同一行（垂直中心基本平齐）。
+  - 检查顶部无被遮挡：标题不压状态栏/胶囊，搜索框和列表不被 header 覆盖。
+  - 上下滚动列表、切换到其他 Tab 再返回，确认布局不抖动、不会二次偏移。
+  - 分别在 iOS/Android 真机检查无胶囊遮挡与点击错位。
+- 风险与回滚点：
+  - 若极端机型返回异常胶囊尺寸，顶部可能出现轻微误差；可回滚到本次变更前的 `page-head-main + status-placeholder` 结构。
 - 日期：2026-03-05
 - 目标：将菜品列表左侧“绿底 + emoji”替换为菜品照片缩略图，并补齐无图兜底逻辑（Skyline）。
 - 改动文件：`pages/order/index.js`、`pages/order/index.wxml`、`pages/order/index.wxss`、`pages/order/index.json`、`components/dish-card/dish-card.wxml`、`components/dish-card/dish-card.wxss`、`components/dish-card/dish-card.js`、`assets/dishes/*`、`docs/PROJECT_CONTEXT.md`

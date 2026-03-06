@@ -1,9 +1,16 @@
 <view class="order-page">
-  <view class="status-placeholder" style="height: {{statusBarHeight}}px;"></view>
+  <view class="custom-header" style="height: {{navBarHeight}}px; padding-top: {{menuButtonTop}}px;">
+    <view class="custom-header-row" style="height: {{menuButtonHeight}}px;">
+      <view class="custom-header-title-wrap">
+        <text class="custom-header-title">今天吃什么呢？</text>
+      </view>
+      <view class="custom-header-placeholder" style="width: {{capsulePlaceholderWidth}}px;"></view>
+    </view>
+  </view>
 
   <view class="page-head">
-    <view class="page-head-main">
-      <text class="page-title">今天吃什么呢？</text>
+    <view class="page-head-meta">
+      <text class="selected-date">已选日期：{{dateLabel}}</text>
       <view
         class="calendar-entry"
         bindtap="onOpenCalendar"
@@ -25,7 +32,6 @@
         </view>
       </view>
     </view>
-    <text class="selected-date">已选日期：{{dateLabel}}</text>
     <view class="search-wrap">
       <search-bar value="{{searchKeyword}}" placeholder="Search" bindchange="onSearchChange"></search-bar>
     </view>
