@@ -1,7 +1,26 @@
 {
   "pages": [
-    "pages/order/index"
+    "pages/order/index",
+    "pages/calendar/index",
+    "pages/mine/index"
   ],
+  "tabBar": {
+    "custom": true,
+    "list": [
+      {
+        "pagePath": "pages/order/index",
+        "text": "菜单"
+      },
+      {
+        "pagePath": "pages/calendar/index",
+        "text": "日历"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
+    ]
+  },
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"

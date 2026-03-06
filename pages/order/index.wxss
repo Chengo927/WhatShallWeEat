@@ -123,7 +123,7 @@
   min-height: 0;
   display: flex;
   gap: 16rpx;
-  padding: 0 22rpx calc(116rpx + env(safe-area-inset-bottom));
+  padding: 0 22rpx calc(224rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -180,12 +180,12 @@
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: calc(104rpx + env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24rpx;
-  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  padding: 16rpx 24rpx;
   background: #ffffff;
   box-shadow: 0 -6rpx 16rpx rgba(0, 0, 0, 0.08);
   z-index: 30;
@@ -224,7 +224,7 @@
   position: fixed;
   left: 22rpx;
   right: 22rpx;
-  bottom: calc(116rpx + env(safe-area-inset-bottom));
+  bottom: calc(224rpx + env(safe-area-inset-bottom));
   height: 640rpx;
   background: #ffffff;
   border-radius: 24rpx;
@@ -340,7 +340,7 @@
   position: fixed;
   left: 22rpx;
   right: 22rpx;
-  bottom: calc(116rpx + env(safe-area-inset-bottom));
+  bottom: calc(224rpx + env(safe-area-inset-bottom));
   height: 720rpx;
   background: #ffffff;
   border-radius: 24rpx;

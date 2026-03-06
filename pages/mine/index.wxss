@@ -1,0 +1,46 @@
+.mine-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #f4f4f4;
+  padding-bottom: calc(124rpx + env(safe-area-inset-bottom));
+}
+
+.mine-header {
+  height: 88rpx;
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+  display: flex;
+  align-items: center;
+}
+
+.mine-title {
+  color: #1e1e1e;
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.mine-content {
+  padding: 12rpx 24rpx 0;
+  box-sizing: border-box;
+}
+
+.mine-card {
+  border-radius: 20rpx;
+  background: #ffffff;
+  padding: 28rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.mine-card-title {
+  display: block;
+  color: #1f1f1f;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.mine-card-desc {
+  display: block;
+  margin-top: 10rpx;
+  color: #777777;
+  font-size: 26rpx;
+}

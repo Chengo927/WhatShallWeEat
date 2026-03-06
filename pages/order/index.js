@@ -147,10 +147,24 @@ Page({
   },
 
   onShow() {
+    this.syncTabBarSelected()
     if (!this.data.pageReady) {
       return
     }
     this.syncSelectedDishesSafe()
+  },
+
+  syncTabBarSelected() {
+    if (typeof this.getTabBar !== 'function') {
+      return
+    }
+    const tabBar = this.getTabBar()
+    if (!tabBar || typeof tabBar.setData !== 'function') {
+      return
+    }
+    tabBar.setData({
+      selected: 0
+    })
   },
 
   initPageData() {

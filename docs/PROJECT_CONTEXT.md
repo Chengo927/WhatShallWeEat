@@ -15,6 +15,9 @@
 
 ## 3) 目录速览（核心）
 - `pages/order/index.*`：主业务页面（筛选、点菜、候选池、抽奖、日历、弹窗）。
+- `pages/calendar/index.*`：Tab 页“日历”占位页（Skyline）。
+- `pages/mine/index.*`：Tab 页“我的”占位页（Skyline）。
+- `custom-tab-bar/*`：官方 `tabBar.custom` 底部导航（菜单/日历/我的）。
 - `components/dish-card/*`：菜品卡片（加入/取消、候选切换）。
 - `components/category-chips/*`：分类筛选。
 - `components/search-bar/*`：搜索输入。
@@ -33,6 +36,7 @@
 7. 日历 emoji 标记：按当日菜单生成标记，超出显示 `+N`。
 8. 存储兼容迁移：兼容旧 key，迁移至按日期 key 与 THINK_POOL。
 9. 菜品列表/已选列表/抽奖结果统一使用菜品缩略图展示（本地图片映射 + placeholder 兜底）。
+10. 全局底部 Tab 导航（官方 tabBar + 自定义 UI）：支持菜单/日历/我的切换与选中态同步。
 
 ## 5) 关键流程（简版）
 1. 页面初始化
@@ -108,6 +112,21 @@
 - 风险与回滚点：
 
 ## 10) 变更日志
+- 日期：2026-03-06
+- 目标：新增底部固定导航栏（菜单/日历/我的），并适配菜单页底部避让。
+- 改动文件：`app.json`、`custom-tab-bar/index.json`、`custom-tab-bar/index.js`、`custom-tab-bar/index.wxml`、`custom-tab-bar/index.wxss`、`pages/calendar/index.json`、`pages/calendar/index.js`、`pages/calendar/index.wxml`、`pages/calendar/index.wxss`、`pages/mine/index.json`、`pages/mine/index.js`、`pages/mine/index.wxml`、`pages/mine/index.wxss`、`pages/order/index.js`、`pages/order/index.wxss`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - `app.json` 启用官方 `tabBar.custom`，新增 3 个 Tab 页面路由配置。
+  - 新增 `custom-tab-bar`：三等分按钮、选中态高亮、点击通过 `wx.switchTab` 切换，含底部安全区处理。
+  - 新增 `calendar` 与 `mine` Skyline 占位页，并在 `onShow` 同步 tab 选中态。
+  - 菜单页底部操作条与弹窗整体上提到 tabBar 之上，内容区底部 padding 增加，避免底部遮挡。
+- 验证步骤：
+  - 打开小程序，确认底部固定 3 个 Tab：菜单/日历/我的。
+  - 依次点击 3 个 Tab，确认页面可切换、无白屏，当前 Tab 高亮正确。
+  - 在菜单页滚动到底部，确认列表内容与底部按钮不被 tabBar 遮挡。
+  - 在 iOS/Android 真机检查 home indicator 安全区与点击区域正常。
+- 风险与回滚点：
+  - 底部偏移值为经验常量，若个别机型视觉间距过大/过小，可调整 `pages/order/index.wxss` 的底部 `calc(...)` 常量。
 - 日期：2026-03-06
 - 目标：菜单页标题与系统胶囊按钮纵向对齐，并整体上移搜索/列表区域（Skyline）。
 - 改动文件：`pages/order/index.js`、`pages/order/index.wxml`、`pages/order/index.wxss`、`docs/PROJECT_CONTEXT.md`

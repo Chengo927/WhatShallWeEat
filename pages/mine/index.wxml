@@ -1,0 +1,12 @@
+<view class="mine-page">
+  <view class="mine-header" style="padding-top: {{statusBarHeight}}px;">
+    <text class="mine-title">我的</text>
+  </view>
+
+  <view class="mine-content">
+    <view class="mine-card">
+      <text class="mine-card-title">我的页面</text>
+      <text class="mine-card-desc">这里预留给偏好设置与个人信息。</text>
+    </view>
+  </view>
+</view>

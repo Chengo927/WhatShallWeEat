@@ -1,0 +1,12 @@
+<view class="calendar-page">
+  <view class="calendar-header" style="padding-top: {{statusBarHeight}}px;">
+    <text class="calendar-title">日历</text>
+  </view>
+
+  <view class="calendar-content">
+    <view class="calendar-card">
+      <text class="calendar-card-title">日历页面</text>
+      <text class="calendar-card-desc">这里预留给历史菜单、标记与统计。</text>
+    </view>
+  </view>
+</view>
