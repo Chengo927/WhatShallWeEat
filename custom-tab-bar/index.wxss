@@ -28,17 +28,19 @@
 }
 
 .tab-bar-icon-wrap {
-  width: 60rpx;
+  min-width: 60rpx;
   height: 60rpx;
-  border-radius: 50%;
-  background: #f0f0f0;
+  padding: 0 8rpx;
+  box-sizing: border-box;
+  border-radius: 0;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .tab-bar-icon-wrap-active {
-  background: #d9f0e5;
+  background: transparent;
 }
 
 .tab-bar-icon {

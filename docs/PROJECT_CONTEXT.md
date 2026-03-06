@@ -122,6 +122,18 @@
 
 ## 10) 变更日志
 - 日期：2026-03-06
+- 目标：去除底部 Tab 文案后方灰色圆形背景，保留文案与选中切页逻辑。
+- 改动文件：`custom-tab-bar/index.wxss`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - Tab 顶部文案后方不再渲染灰色/绿色圆形底。
+  - 保持 3 个 Tab 等宽分布、`wx.switchTab` 跳转与 `selected` 选中态同步机制不变。
+- 验证步骤：
+  - 打开任一 Tab，确认“菜单 / 日历 / 我的”后方无灰色圆形背景。
+  - 切换三个 Tab，确认当前项高亮与页面跳转正常。
+  - 在带底部安全区设备检查无裁切、无异常留白、点击区域正常。
+- 风险与回滚点：
+  - 仅视觉样式调整；如需恢复圆形底，回滚 `custom-tab-bar/index.wxss` 的 `.tab-bar-icon-wrap*` 样式。
+- 日期：2026-03-06
 - 目标：将底部 Tab 文案移动到上方圆形区域，移除下方重复文案行。
 - 改动文件：`custom-tab-bar/index.wxml`、`custom-tab-bar/index.wxss`、`custom-tab-bar/index.js`、`docs/PROJECT_CONTEXT.md`
 - 行为变化：
