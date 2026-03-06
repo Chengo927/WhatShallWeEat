@@ -1,6 +1,14 @@
 const sourceData = require('../../data/dishes') || {}
 const categories = Array.isArray(sourceData.categories) ? sourceData.categories : []
 const dishes = Array.isArray(sourceData.dishes) ? sourceData.dishes : []
+const DISH_PLACEHOLDER = '/assets/dishes/placeholder.png'
+const DISH_IMAGE_BY_ID = dishes.reduce((accumulator, dish) => {
+  if (!dish || !dish.id) {
+    return accumulator
+  }
+  accumulator[dish.id] = `/assets/dishes/${dish.id}.png`
+  return accumulator
+}, {})
 const {
   addDishToDate,
   removeDishFromDate,
@@ -31,6 +39,38 @@ function formatDateLabel(dateStr) {
   return `${year}年${Number(month)}月${Number(day)}日`
 }
 
+function resolveDishImage(dish, imageFallbackMap) {
+  if (!dish || typeof dish !== 'object') {
+    return DISH_PLACEHOLDER
+  }
+
+  const dishId = typeof dish.id === 'string' ? dish.id : ''
+  if (dishId && imageFallbackMap && imageFallbackMap[dishId]) {
+    return DISH_PLACEHOLDER
+  }
+
+  const explicitImage = typeof dish.img === 'string' ? dish.img.trim() : ''
+  if (explicitImage) {
+    return explicitImage
+  }
+
+  const mappedImage = dishId ? DISH_IMAGE_BY_ID[dishId] : ''
+  return mappedImage || DISH_PLACEHOLDER
+}
+
+function attachDishImages(dishList, imageFallbackMap) {
+  if (!Array.isArray(dishList)) {
+    return []
+  }
+
+  return dishList
+    .filter((dish) => dish && dish.id)
+    .map((dish) => ({
+      ...dish,
+      img: resolveDishImage(dish, imageFallbackMap)
+    }))
+}
+
 Page({
   data: {
     pageReady: false,
@@ -41,6 +81,8 @@ Page({
     searchKeyword: '',
     selectedCategory: 'all',
     categories,
+    placeholderImg: DISH_PLACEHOLDER,
+    imageFallbackMap: {},
     selectedDishIds: [],
     pendingDishIds: [],
     selectedDishes: [],
@@ -110,13 +152,14 @@ Page({
 
   syncSelectedDishesSafe() {
     try {
+      const imageFallbackMap = this.data.imageFallbackMap || {}
       const selectedDishes = getTodayMenu(this.data.today)
-      const safeSelectedDishes = Array.isArray(selectedDishes) ? selectedDishes : []
+      const safeSelectedDishes = attachDishImages(selectedDishes, imageFallbackMap)
       const safeIds = safeSelectedDishes.map((dish) => dish.id).filter((dishId) => !!dishId)
       const pendingDishIds = getPendingDishIds(this.data.today)
       const safePendingIds = Array.isArray(pendingDishIds) ? pendingDishIds : []
       const thinkPool = getThinkPool()
-      const safeThinkPool = Array.isArray(thinkPool) ? thinkPool : []
+      const safeThinkPool = attachDishImages(thinkPool, imageFallbackMap)
       const calendarMarks = getMealCalendarMarks()
       const lotteryMaxCount = safeThinkPool.length
       const nextLotteryCount = clampLotteryCount(this.data.lotteryCount, lotteryMaxCount)
@@ -183,6 +226,7 @@ Page({
     try {
       const selectedCategory = this.data.selectedCategory
       const keyword = (this.data.searchKeyword || '').trim().toLowerCase()
+      const imageFallbackMap = this.data.imageFallbackMap || {}
       const selectedMap = {}
       const pendingMap = {}
       const selectedIds = Array.isArray(this.data.selectedDishIds) ? this.data.selectedDishIds : []
@@ -213,6 +257,7 @@ Page({
         .map((dish) => {
           return {
             ...dish,
+            img: resolveDishImage(dish, imageFallbackMap),
             added: !!selectedMap[dish.id],
             pending: !!pendingMap[dish.id]
           }
@@ -227,6 +272,55 @@ Page({
         visibleDishes: []
       })
     }
+  },
+
+  markDishImageFallback(dishId) {
+    if (!dishId) {
+      return
+    }
+
+    const currentFallbackMap = this.data.imageFallbackMap || {}
+    if (currentFallbackMap[dishId]) {
+      return
+    }
+
+    const nextFallbackMap = {
+      ...currentFallbackMap,
+      [dishId]: true
+    }
+
+    this.setData(
+      {
+        imageFallbackMap: nextFallbackMap,
+        selectedDishes: attachDishImages(this.data.selectedDishes, nextFallbackMap),
+        thinkPool: attachDishImages(this.data.thinkPool, nextFallbackMap),
+        pendingResult: attachDishImages(this.data.pendingResult, nextFallbackMap)
+      },
+      () => {
+        this.applyFiltersSafe()
+      }
+    )
+  },
+
+  onDishImageError(event) {
+    const dishId = event && event.detail ? event.detail.dishId : ''
+    this.markDishImageFallback(dishId)
+  },
+
+  onSummaryImageError(event) {
+    const dishId =
+      event && event.currentTarget && event.currentTarget.dataset
+        ? event.currentTarget.dataset.dishId
+        : ''
+    this.markDishImageFallback(dishId)
+  },
+
+  onLotteryImageError(event) {
+    const dishId =
+      event && event.currentTarget && event.currentTarget.dataset
+        ? event.currentTarget.dataset.dishId
+        : ''
+    this.markDishImageFallback(dishId)
   },
 
   onAddDish(event) {

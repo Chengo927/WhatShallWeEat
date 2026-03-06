@@ -33,12 +33,14 @@
 
   <view wx:if="{{pageReady}}" class="content-wrap">
     <view class="category-pane">
-      <category-chips
-        categories="{{categories}}"
-        selected="{{selectedCategory}}"
-        vertical="{{true}}"
-        bindchange="onCategoryChange"
-      ></category-chips>
+      <view class="category-chips-wrap">
+        <category-chips
+          categories="{{categories}}"
+          selected="{{selectedCategory}}"
+          vertical="{{true}}"
+          bindchange="onCategoryChange"
+        ></category-chips>
+      </view>
     </view>
 
     <scroll-view
@@ -56,6 +58,7 @@
             action-text="大吃特吃"
             bindaction="onAddDish"
             bindpendingaction="onTogglePending"
+            bindimageerror="onDishImageError"
           ></dish-card>
         </block>
         <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>
@@ -91,7 +94,16 @@
       <view wx:if="{{!selectedDishes.length}}" class="popup-empty">今天还没有加入菜品</view>
       <block wx:for="{{selectedDishes}}" wx:key="id">
         <view class="popup-item">
-          <text class="popup-item-name">{{item.emoji}} {{item.name}}</text>
+          <view class="popup-item-main">
+            <image
+              class="popup-item-thumb"
+              src="{{item.img || placeholderImg}}"
+              mode="aspectFill"
+              data-dish-id="{{item.id}}"
+              binderror="onSummaryImageError"
+            />
+            <text class="popup-item-name">{{item.name}}</text>
+          </view>
         </view>
       </block>
     </scroll-view>
@@ -139,7 +151,13 @@
       <view wx:if="{{!pendingResult.length}}" class="lottery-empty">点击开始抽奖后显示结果</view>
       <block wx:for="{{pendingResult}}" wx:key="id">
         <view class="lottery-item">
-          <text class="lottery-item-emoji">{{item.emoji || '🍽️'}}</text>
+          <image
+            class="lottery-item-thumb"
+            src="{{item.img || placeholderImg}}"
+            mode="aspectFill"
+            data-dish-id="{{item.id}}"
+            binderror="onLotteryImageError"
+          />
           <text class="lottery-item-name">{{item.name}}</text>
         </view>
       </block>

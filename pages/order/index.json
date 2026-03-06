@@ -1,5 +1,5 @@
 {
-  "renderer": "webview",
+  "renderer": "skyline",
   "componentFramework": "glass-easel",
   "navigationStyle": "custom",
   "usingComponents": {

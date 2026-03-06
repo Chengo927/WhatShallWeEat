@@ -34,6 +34,17 @@ Component({
     }
   },
   methods: {
+    onThumbError() {
+      const { dish } = this.data
+      if (!dish || !dish.id) {
+        return
+      }
+
+      this.triggerEvent('imageerror', {
+        dishId: dish.id
+      })
+    },
+
     onTapAction() {
       const { dish, disabled } = this.data
       if (!dish || !dish.id) {

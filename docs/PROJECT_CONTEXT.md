@@ -11,7 +11,7 @@
 - 组件框架：`glass-easel`。
 - 数据存储：本地存储 `wx.getStorageSync / wx.setStorageSync`（无后端）。
 - 当前主页面：`pages/order/index`（`app.json` 只注册了这一页）。
-- 当前 `pages/order/index.json` 使用 `renderer: "webview"`（不是 skyline）。
+- 当前 `pages/order/index.json` 使用 `renderer: "skyline"` + `componentFramework: "glass-easel"`。
 
 ## 3) 目录速览（核心）
 - `pages/order/index.*`：主业务页面（筛选、点菜、候选池、抽奖、日历、弹窗）。
@@ -32,6 +32,7 @@
 6. 日历弹窗：切换年月、选择日期。
 7. 日历 emoji 标记：按当日菜单生成标记，超出显示 `+N`。
 8. 存储兼容迁移：兼容旧 key，迁移至按日期 key 与 THINK_POOL。
+9. 菜品列表/已选列表/抽奖结果统一使用菜品缩略图展示（本地图片映射 + placeholder 兜底）。
 
 ## 5) 关键流程（简版）
 1. 页面初始化
@@ -63,7 +64,8 @@
 - `MEAL_PENDING_BY_DATE`：`{ [date]: dishId[] }`，旧结构（兼容）。
 
 `DishItem` 规范：
-- `{ id: string, name: string, emoji: string }`
+- `{ id: string, name: string, emoji?: string, img?: string }`
+- 说明：当前采用渲染前补齐策略，storage 里旧数据无 `img` 也可通过 `id -> /assets/dishes/<id>.png` 映射显示。
 
 ## 7) 组件事件契约（给 Agent 快速对接）
 - `dish-card`
@@ -85,9 +87,10 @@
   - 事件：`confirm` -> `{ date }`，`change` -> `{ date }`，`close`
 
 ## 8) 当前注意点（后续改动请先看）
-1. 主页面已使用自定义导航风格，但目前 renderer 仍是 `webview`。
+1. 主页面已使用 Skyline（`renderer: skyline`），`order` 页 WXSS 应保持 class 选择器，避免 Skyline 选择器告警。
 2. `pages/index` 与 `navigation-bar` 是模板/备用结构，未在 `app.json` 启用。
 3. 抽奖确认有保护：若抽奖后修改了数量（`selectedK !== lotteryCount`）会要求重抽。
+4. 菜品图片默认按 `id` 读取 `/assets/dishes/<id>.png`，加载失败后按 `dishId` 记录回退并统一显示 `/assets/dishes/placeholder.png`。
 
 ## 9) 维护规则（强制）
 每次代码改动后，必须更新本文件，至少包含：
@@ -104,6 +107,21 @@
 - 风险与回滚点：
 
 ## 10) 变更日志
+- 日期：2026-03-05
+- 目标：将菜品列表左侧“绿底 + emoji”替换为菜品照片缩略图，并补齐无图兜底逻辑（Skyline）。
+- 改动文件：`pages/order/index.js`、`pages/order/index.wxml`、`pages/order/index.wxss`、`pages/order/index.json`、`components/dish-card/dish-card.wxml`、`components/dish-card/dish-card.wxss`、`components/dish-card/dish-card.js`、`assets/dishes/*`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 列表卡片改为固定尺寸 `aspectFill` 缩略图，去除原绿色底块与 emoji 主展示。
+  - “查看已选”与“抽奖结果”中的菜品项也改为缩略图 + 名称。
+  - 新增本地图片映射 `id -> /assets/dishes/<id>.png`，并通过 `binderror` 将失败项回退到 placeholder，避免破图与布局抖动。
+  - `pages/order/index` renderer 从 `webview` 切换到 `skyline`，并移除该页 tag 选择器用法。
+- 验证步骤：
+  - 进入点菜列表，确认每行左侧显示缩略图且行高稳定。
+  - 进入“查看已选”，确认列表缩略图正常。
+  - 进入抽奖弹窗并执行一次抽奖，确认结果列表缩略图正常。
+  - 临时改错某个图片路径后触发加载失败，确认回退 placeholder 且不出现破图占位符。
+- 风险与回滚点：
+  - 新增了本地图片资源，包体积增加；如需快速回滚，可先回退 `assets/dishes/*` 与 `img` 显示逻辑为 emoji。
 - 日期：2026-03-05
 - 目标：建立项目上下文文档，沉淀当前功能与实现，便于后续 Agent 低 token 接力。
 - 改动文件：`docs/PROJECT_CONTEXT.md`
