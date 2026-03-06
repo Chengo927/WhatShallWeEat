@@ -1,0 +1,48 @@
+<view class="meal-calendar">
+  <view class="meal-calendar__header">
+    <picker
+      mode="multiSelector"
+      range="{{yearMonthRange}}"
+      value="{{yearMonthValue}}"
+      bindchange="onYearMonthChange"
+      bindcancel="onYearMonthCancel"
+    >
+      <view
+        class="meal-calendar__title-hit"
+        hover-class="meal-calendar__title-hit--active"
+        hover-stay-time="80"
+      >
+        <text class="meal-calendar__title">{{displayYear}}年 {{displayMonth}}月</text>
+        <text class="meal-calendar__title-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <view class="meal-calendar__weekday-row">
+    <block wx:for="{{weekdays}}" wx:key="*this">
+      <text class="meal-calendar__weekday">{{item}}</text>
+    </block>
+  </view>
+
+  <view class="meal-calendar__day-grid">
+    <block wx:for="{{days}}" wx:key="key" wx:for-item="dayItem">
+      <view
+        class="meal-calendar__day {{dayItem.currentMonth ? '' : 'meal-calendar__day--outside'}} {{dayItem.selected ? 'meal-calendar__day--selected' : ''}}"
+        data-date="{{dayItem.date}}"
+        bindtap="onSelectDate"
+        hover-class="meal-calendar__day--hover"
+        hover-stay-time="80"
+      >
+        <text class="meal-calendar__day-number">{{dayItem.day}}</text>
+        <view class="meal-calendar__day-marks" wx:if="{{dayItem.marks.length || dayItem.marksExtra}}">
+          <block wx:for="{{dayItem.marks}}" wx:key="*this" wx:for-item="emojiMark">
+            <text class="meal-calendar__day-mark">{{emojiMark}}</text>
+          </block>
+          <text wx:if="{{dayItem.marksExtra}}" class="meal-calendar__day-mark meal-calendar__day-mark--extra">
+            {{dayItem.marksExtra}}
+          </text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

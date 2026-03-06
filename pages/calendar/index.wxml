@@ -3,10 +3,29 @@
     <text class="calendar-title">日历</text>
   </view>
 
-  <view class="calendar-content">
-    <view class="calendar-card">
-      <text class="calendar-card-title">日历页面</text>
-      <text class="calendar-card-desc">这里预留给历史菜单、标记与统计。</text>
+  <scroll-view class="calendar-scroll" scroll-y show-scrollbar="{{false}}">
+    <view class="calendar-content">
+      <meal-calendar
+        value="{{selectedDate}}"
+        marks="{{calendarMarks}}"
+        bindchange="onCalendarChange"
+      ></meal-calendar>
+
+      <view class="calendar-summary">
+        <text class="calendar-summary-title">已选日期：{{selectedDateLabel}}</text>
+        <text class="calendar-summary-meta">当日菜品 {{selectedMenu.length}} 道</text>
+        <view wx:if="{{selectedMenu.length}}" class="calendar-dish-list">
+          <block wx:for="{{selectedMenu}}" wx:key="id">
+            <view class="calendar-dish-item">
+              <text class="calendar-dish-name">{{item.name}}</text>
+              <text wx:if="{{item.emoji}}" class="calendar-dish-emoji">{{item.emoji}}</text>
+            </view>
+          </block>
+        </view>
+        <text wx:else class="calendar-empty">这一天还没有已选菜品</text>
+      </view>
     </view>
-  </view>
+
+    <view class="calendar-bottom-spacer"></view>
+  </scroll-view>
 </view>

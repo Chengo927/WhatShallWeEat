@@ -10,14 +10,15 @@
 - 技术栈：微信小程序原生（WXML / WXSS / JS）。
 - 组件框架：`glass-easel`。
 - 数据存储：本地存储 `wx.getStorageSync / wx.setStorageSync`（无后端）。
-- 当前主页面：`pages/order/index`（`app.json` 只注册了这一页）。
+- 当前页面结构：`pages/order/index`、`pages/calendar/index`、`pages/mine/index`（通过 tabBar 切换）。
 - 当前 `pages/order/index.json` 使用 `renderer: "skyline"` + `componentFramework: "glass-easel"`。
 
 ## 3) 目录速览（核心）
-- `pages/order/index.*`：主业务页面（筛选、点菜、候选池、抽奖、日历、弹窗）。
+- `pages/order/index.*`：主业务页面（筛选、点菜、候选池、抽奖、弹窗）。
 - `pages/calendar/index.*`：Tab 页“日历”占位页（Skyline）。
 - `pages/mine/index.*`：Tab 页“我的”占位页（Skyline）。
 - `custom-tab-bar/*`：官方 `tabBar.custom` 底部导航（菜单/日历/我的）。
+- `components/meal-calendar/*`：内嵌式日历组件（年月切换、日期选择、marker 展示）。
 - `components/dish-card/*`：菜品卡片（加入/取消、候选切换）。
 - `components/category-chips/*`：分类筛选。
 - `components/search-bar/*`：搜索输入。
@@ -32,16 +33,17 @@
 3. 菜品加入/取消“容我想想”（候选池）。
 4. “查看已选”菜单弹窗。
 5. 抽奖弹窗：设置抽取数量、开始抽奖、再抽、确认写入。
-6. 日历弹窗：切换年月、选择日期。
+6. 日历 Tab（内嵌日历）：切换年月、选择日期。
 7. 日历 emoji 标记：按当日菜单生成标记，超出显示 `+N`。
 8. 存储兼容迁移：兼容旧 key，迁移至按日期 key 与 THINK_POOL。
 9. 菜品列表/已选列表/抽奖结果统一使用菜品缩略图展示（本地图片映射 + placeholder 兜底）。
 10. 全局底部 Tab 导航（官方 tabBar + 自定义 UI）：支持菜单/日历/我的切换与选中态同步。
+11. 日历能力已迁移到“日历 Tab”主页面承载，菜单页不再提供日历入口/弹层。
 
 ## 5) 关键流程（简版）
 1. 页面初始化
 - 通过 `wx.getSystemInfoSync + wx.getMenuButtonBoundingClientRect` 计算 `navBarHeight` 与胶囊避让宽度，生成菜单页自定义头部布局参数。
-- 确定默认日期（今天），拉取该日期菜单/候选池/日历标记，生成可见菜品列表。
+- 菜单页默认使用当天日期，拉取该日期菜单/候选池并生成可见菜品列表；日历标记由日历 Tab 读取。
 
 2. 点菜
 - 点击“加入”调用 `addDishToDate(date, dishId)`。
@@ -57,8 +59,8 @@
 - 点击“确定”才调用 `confirmLotteryResult(date, pendingResult)` 写入当天菜单。
 
 5. 日历
-- `calendar-popup` 接收 `marks`（`date -> emoji[]`）渲染每个日期下方标记。
-- 选中日期后主页面切换 `today` 并重新同步菜单状态。
+- `meal-calendar` 接收 `marks`（`date -> emoji[]`）渲染每个日期下方标记。
+- 选中日期后日历页刷新该日期菜单摘要；菜单页不再承载日期切换入口。
 
 ## 6) 本地存储模型（当前）
 - `THINK_POOL`：`DishItem[]`，全局候选池。
@@ -91,6 +93,10 @@
   - 输入：`visible`, `value`, `marks`, `yearSpan`
   - 事件：`confirm` -> `{ date }`，`change` -> `{ date }`，`close`
 
+- `meal-calendar`
+  - 输入：`value`, `marks`, `yearSpan`
+  - 事件：`confirm` -> `{ date }`，`change` -> `{ date }`
+
 ## 8) 当前注意点（后续改动请先看）
 1. 主页面已使用 Skyline（`renderer: skyline`），`order` 页 WXSS 应保持 class 选择器，避免 Skyline 选择器告警。
 2. `pages/index` 与 `navigation-bar` 是模板/备用结构，未在 `app.json` 启用。
@@ -112,6 +118,31 @@
 - 风险与回滚点：
 
 ## 10) 变更日志
+- 日期：2026-03-06
+- 目标：去除菜单页标题“今天吃什么呢？”背后的黄色底色。
+- 改动文件：`pages/order/index.wxss`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 顶部标题容器背景由黄色改为透明，仅保留文字与布局，不影响胶囊避让与对齐逻辑。
+- 验证步骤：
+  - 打开菜单页，确认“今天吃什么呢？”后方不再有黄色块背景。
+  - 检查标题与右上角胶囊仍保持同一行对齐。
+- 风险与回滚点：
+  - 仅视觉调整，风险低；如需恢复可回滚 `custom-header-title-wrap` 的 `background` 样式。
+- 日期：2026-03-06
+- 目标：将菜单页日历入口/弹层迁移到“日历 Tab”主页面，并抽出可复用日历组件。
+- 改动文件：`components/meal-calendar/index.json`、`components/meal-calendar/index.js`、`components/meal-calendar/index.wxml`、`components/meal-calendar/index.wxss`、`pages/calendar/index.json`、`pages/calendar/index.js`、`pages/calendar/index.wxml`、`pages/calendar/index.wxss`、`pages/order/index.json`、`pages/order/index.js`、`pages/order/index.wxml`、`pages/order/index.wxss`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 新增可复用组件 `meal-calendar`，承载日历核心能力（年月切换、日期选择、emoji marker）。
+  - `pages/calendar/index` 改为直接渲染日历组件并读取 `getMealCalendarMarks`，可在页面内查看某天菜单。
+  - 菜单页移除日历入口图标、日历弹层节点及相关状态/事件；菜单逻辑默认以当天日期写入/读取菜单。
+  - “菜单选菜 -> 日历标记展示”链路保持不变：标记数据仍来自 `utils/storage` 的 `meal_calendar_marks_v1`。
+- 验证步骤：
+  - 打开菜单页，确认没有日历入口按钮与日历弹层 UI。
+  - 进入日历 Tab，确认可切换年月、选择日期，并展示日期标记。
+  - 在菜单页新增/取消菜品后切回日历 Tab，确认对应日期标记更新。
+  - 检查菜单页与日历页底部内容均不被自定义 tabBar 遮挡。
+- 风险与回滚点：
+  - 菜单页不再支持按任意日期点菜；若需恢复，可回滚 `pages/order/index.*` 中日历入口与 `today` 切换逻辑。
 - 日期：2026-03-06
 - 目标：新增底部固定导航栏（菜单/日历/我的），并适配菜单页底部避让。
 - 改动文件：`app.json`、`custom-tab-bar/index.json`、`custom-tab-bar/index.js`、`custom-tab-bar/index.wxml`、`custom-tab-bar/index.wxss`、`pages/calendar/index.json`、`pages/calendar/index.js`、`pages/calendar/index.wxml`、`pages/calendar/index.wxss`、`pages/mine/index.json`、`pages/mine/index.js`、`pages/mine/index.wxml`、`pages/mine/index.wxss`、`pages/order/index.js`、`pages/order/index.wxss`、`docs/PROJECT_CONTEXT.md`
