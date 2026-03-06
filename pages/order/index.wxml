@@ -120,10 +120,11 @@
       </view>
       <text class="lottery-tip">开始/再抽只预览，点击“确定”才写入今日菜单</text>
       <view class="lottery-action-row">
-        <view wx:if="{{!hasDrawn}}" class="lottery-action-btn lottery-action-btn-ghost" bindtap="onStartLottery">
-          开始抽奖
-        </view>
-        <view wx:else class="lottery-action-btn lottery-action-btn-ghost" bindtap="onRedrawLottery">
+        <view class="lottery-action-btn lottery-action-btn-ghost" bindtap="onStartLottery">开始抽奖</view>
+        <view
+          class="lottery-action-btn lottery-action-btn-ghost {{hasDrawn ? '' : 'lottery-action-btn-disabled'}}"
+          bindtap="onRedrawLottery"
+        >
           再抽一次
         </view>
       </view>
