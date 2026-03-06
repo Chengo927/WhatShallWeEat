@@ -1,6 +1,7 @@
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六']
 const MONTH_LABELS = Array.from({ length: 12 }, (_, index) => `${index + 1}月`)
 const MAX_VISIBLE_EMOJI_MARKS = 4
+const MAX_CALENDAR_DAYS = 31
 
 function formatDate(dateObj) {
   const year = dateObj.getFullYear()
@@ -71,14 +72,8 @@ function buildDayCell(dateObj, isCurrentMonth, selectedDate, marksByDate) {
 }
 
 function buildMonthDays(year, month, selectedDate, marksByDate) {
-  const monthStartWeekday = new Date(year, month - 1, 1).getDay()
   const monthDays = new Date(year, month, 0).getDate()
   const days = []
-
-  for (let offset = monthStartWeekday; offset > 0; offset -= 1) {
-    const prevDateObj = new Date(year, month - 1, 1 - offset)
-    days.push(buildDayCell(prevDateObj, false, selectedDate, marksByDate))
-  }
 
   for (let day = 1; day <= monthDays; day += 1) {
     const dateObj = new Date(year, month - 1, day)
@@ -86,7 +81,7 @@ function buildMonthDays(year, month, selectedDate, marksByDate) {
   }
 
   let nextDayOffset = 1
-  while (days.length < 42) {
+  while (days.length < MAX_CALENDAR_DAYS) {
     const nextDateObj = new Date(year, month - 1, monthDays + nextDayOffset)
     days.push(buildDayCell(nextDateObj, false, selectedDate, marksByDate))
     nextDayOffset += 1

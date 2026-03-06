@@ -13,7 +13,7 @@
 
       <view class="calendar-summary">
         <view class="calendar-summary-head">
-          <text class="calendar-summary-title">当前菜品 {{selectedMenu.length}} 道</text>
+          <text class="calendar-summary-title">今日御膳 {{selectedMenu.length}} 道</text>
           <view class="calendar-head-actions">
             <view class="calendar-edit-btn {{isEditing ? 'calendar-edit-btn-active' : ''}}" bindtap="onToggleEdit">
               {{isEditing ? '完成' : '编辑'}}
@@ -21,12 +21,7 @@
           </view>
         </view>
         <view wx:if="{{isEditing}}" class="calendar-add-panel">
-          <scroll-view
-            wx:if="{{allDishOptions.length}}"
-            class="calendar-add-list"
-            scroll-y
-            show-scrollbar="{{false}}"
-          >
+          <view wx:if="{{allDishOptions.length}}" class="calendar-add-list">
             <block wx:for="{{allDishOptions}}" wx:key="id">
               <view class="calendar-add-item">
                 <view class="calendar-add-item-main">
@@ -46,7 +41,7 @@
                 </view>
               </view>
             </block>
-          </scroll-view>
+          </view>
           <text wx:else class="calendar-add-empty">暂无可添加菜品</text>
         </view>
         <view wx:elif="{{selectedMenu.length}}" class="calendar-dish-list">

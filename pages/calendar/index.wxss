@@ -1,11 +1,12 @@
 .calendar-page {
   min-height: 100vh;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   background: #f4f4f4;
+  overflow: hidden;
 }
 
 .calendar-header {
@@ -26,6 +27,7 @@
 .calendar-scroll {
   flex: 1;
   min-height: 0;
+  height: 0;
 }
 
 .calendar-content {
@@ -88,12 +90,10 @@
   background: #fafdfb;
   padding: 10rpx 14rpx;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .calendar-add-list {
   width: 100%;
-  height: 520rpx;
 }
 
 .calendar-add-item {
