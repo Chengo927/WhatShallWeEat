@@ -21,7 +21,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6rpx;
 }
 
 .tab-bar-item-active {
@@ -29,8 +28,8 @@
 }
 
 .tab-bar-icon-wrap {
-  width: 44rpx;
-  height: 44rpx;
+  width: 60rpx;
+  height: 60rpx;
   border-radius: 50%;
   background: #f0f0f0;
   display: flex;
@@ -44,18 +43,11 @@
 
 .tab-bar-icon {
   color: #6b6b6b;
-  font-size: 24rpx;
+  font-size: 21rpx;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.1;
 }
 
-.tab-bar-label {
-  color: #6b6b6b;
-  font-size: 22rpx;
-  line-height: 1;
-}
-
-.tab-bar-item-active .tab-bar-icon,
-.tab-bar-item-active .tab-bar-label {
+.tab-bar-item-active .tab-bar-icon {
   color: #0d6b45;
 }

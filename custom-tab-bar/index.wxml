@@ -8,9 +8,8 @@
         bindtap="onSwitchTab"
       >
         <view class="tab-bar-icon-wrap {{selected === index ? 'tab-bar-icon-wrap-active' : ''}}">
-          <text class="tab-bar-icon">{{item.icon}}</text>
+          <text class="tab-bar-icon">{{item.text}}</text>
         </view>
-        <text class="tab-bar-label">{{item.text}}</text>
       </view>
     </block>
   </view>

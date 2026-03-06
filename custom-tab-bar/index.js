@@ -1,18 +1,15 @@
 const TAB_LIST = [
   {
     pagePath: '/pages/order/index',
-    text: '菜单',
-    icon: '餐'
+    text: '菜单'
   },
   {
     pagePath: '/pages/calendar/index',
-    text: '日历',
-    icon: '历'
+    text: '日历'
   },
   {
     pagePath: '/pages/mine/index',
-    text: '我的',
-    icon: '我'
+    text: '我的'
   }
 ]
 
