@@ -5,9 +5,9 @@
     "urlCheck": false,
     "coverView": true,
     "lazyloadPlaceholderEnable": false,
-    "skylineRenderEnable": false,
+    "skylineRenderEnable": true,
     "preloadBackgroundData": false,
-    "autoAudits": true,
+    "autoAudits": false,
     "showShadowRootInWxmlPanel": true,
     "compileHotReLoad": true
   }
