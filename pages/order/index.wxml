@@ -26,29 +26,31 @@
       </view>
     </view>
 
-    <scroll-view
-      class="dish-scroll"
-      scroll-y
-      show-scrollbar="{{false}}"
-      bindscrolltolower="onScrollToLower"
-    >
-      <view class="dish-list">
-        <block wx:for="{{visibleDishes}}" wx:key="id">
-          <dish-card
-            dish="{{item}}"
-            disabled="{{item.added}}"
-            pending="{{item.pending}}"
-            action-text="大吃特吃"
-            bindaction="onAddDish"
-            bindpendingaction="onTogglePending"
-            bindimageerror="onDishImageError"
-          ></dish-card>
-        </block>
-        <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>
-        <view class="bottom-reached-hint">{{bottomHint}}</view>
-        <view class="list-bottom-spacer"></view>
-      </view>
-    </scroll-view>
+    <view class="dish-scroll-wrap">
+      <scroll-view
+        class="dish-scroll"
+        scroll-y
+        show-scrollbar="{{false}}"
+        bindscrolltolower="onScrollToLower"
+      >
+        <view class="dish-list">
+          <block wx:for="{{visibleDishes}}" wx:key="id">
+            <dish-card
+              dish="{{item}}"
+              disabled="{{item.added}}"
+              pending="{{item.pending}}"
+              action-text="大吃特吃"
+              bindaction="onAddDish"
+              bindpendingaction="onTogglePending"
+              bindimageerror="onDishImageError"
+            ></dish-card>
+          </block>
+          <view wx:if="{{!visibleDishes.length}}" class="empty-state">暂无匹配菜品</view>
+          <view class="bottom-reached-hint">{{bottomHint}}</view>
+          <view class="list-bottom-spacer"></view>
+        </view>
+      </scroll-view>
+    </view>
   </view>
 
   <view wx:else class="content-wrap content-loading"></view>

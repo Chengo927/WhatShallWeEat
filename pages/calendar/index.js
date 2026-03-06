@@ -50,7 +50,6 @@ Page({
     calendarMarks: {},
     selectedMenu: [],
     isEditing: false,
-    showAddPanel: false,
     allDishOptions: []
   },
 
@@ -74,7 +73,7 @@ Page({
       selectedDate,
       selectedMenu,
       calendarMarks,
-      isEditing: selectedMenu.length ? this.data.isEditing : false,
+      isEditing: !!this.data.isEditing,
       allDishOptions
     })
   },
@@ -107,21 +106,12 @@ Page({
       {
         selectedDate: nextDate,
         selectedMenu: getTodayMenu(nextDate),
-        isEditing: false,
-        showAddPanel: false
+        isEditing: false
       },
       () => {
         this.syncCalendarData()
       }
     )
-  },
-
-  onToggleAddPanel() {
-    const nextShowAddPanel = !this.data.showAddPanel
-    this.setData({
-      showAddPanel: nextShowAddPanel,
-      isEditing: nextShowAddPanel ? false : this.data.isEditing
-    })
   },
 
   onAddDish(event) {
@@ -149,13 +139,8 @@ Page({
   },
 
   onToggleEdit() {
-    if (!this.data.selectedMenu.length) {
-      return
-    }
-
     this.setData({
-      isEditing: !this.data.isEditing,
-      showAddPanel: false
+      isEditing: !this.data.isEditing
     })
   },
 
@@ -171,6 +156,11 @@ Page({
     }
 
     const removed = removeDishFromDate(selectedDate, dishId)
+    wx.showToast({
+      title: removed ? '已移除' : '移除失败',
+      icon: 'none'
+    })
+
     if (!removed) {
       return
     }
