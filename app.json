@@ -1,7 +1,6 @@
 {
   "pages": [
-    "pages/order/index",
-    ".agents/rules/planner"
+    "pages/order/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
