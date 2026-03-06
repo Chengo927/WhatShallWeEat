@@ -12,13 +12,54 @@
       ></meal-calendar>
 
       <view class="calendar-summary">
-        <text class="calendar-summary-title">已选日期：{{selectedDateLabel}}</text>
-        <text class="calendar-summary-meta">当日菜品 {{selectedMenu.length}} 道</text>
+        <view class="calendar-summary-head">
+          <text class="calendar-summary-title">当前菜品 {{selectedMenu.length}} 道</text>
+          <view class="calendar-head-actions">
+            <view class="calendar-add-btn" bindtap="onToggleAddPanel">
+              {{showAddPanel ? '收起' : '添加'}}
+            </view>
+            <view
+              class="calendar-edit-btn {{selectedMenu.length ? '' : 'calendar-edit-btn-disabled'}}"
+              bindtap="onToggleEdit"
+            >
+              {{isEditing ? '完成' : '编辑'}}
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{showAddPanel}}" class="calendar-add-panel">
+          <view wx:if="{{allDishOptions.length}}" class="calendar-add-list">
+            <block wx:for="{{allDishOptions}}" wx:key="id">
+              <view class="calendar-add-item">
+                <view class="calendar-add-item-main">
+                  <text class="calendar-add-item-name">{{item.name}}</text>
+                  <text wx:if="{{item.emoji}}" class="calendar-add-item-emoji">{{item.emoji}}</text>
+                </view>
+                <view wx:if="{{item.added}}" class="calendar-add-item-btn calendar-add-item-btn-disabled">
+                  已选
+                </view>
+                <view wx:else class="calendar-add-item-btn" data-dish-id="{{item.id}}" bindtap="onAddDish">
+                  添加
+                </view>
+              </view>
+            </block>
+          </view>
+          <text wx:else class="calendar-add-empty">暂无可添加菜品</text>
+        </view>
         <view wx:if="{{selectedMenu.length}}" class="calendar-dish-list">
           <block wx:for="{{selectedMenu}}" wx:key="id">
             <view class="calendar-dish-item">
               <text class="calendar-dish-name">{{item.name}}</text>
-              <text wx:if="{{item.emoji}}" class="calendar-dish-emoji">{{item.emoji}}</text>
+              <view class="calendar-dish-actions">
+                <text wx:if="{{item.emoji}}" class="calendar-dish-emoji">{{item.emoji}}</text>
+                <view
+                  wx:if="{{isEditing}}"
+                  class="calendar-remove-btn"
+                  data-dish-id="{{item.id}}"
+                  bindtap="onRemoveDish"
+                >
+                  移除
+                </view>
+              </view>
             </view>
           </block>
         </view>
