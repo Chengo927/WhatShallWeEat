@@ -1,6 +1,6 @@
 # WhatShallWeEat 项目上下文（给 Agent 快速加载）
 
-最后更新：2026-03-06
+最后更新：2026-03-10
 
 ## 1) 项目是做什么的
 - 这是一个微信小程序，用于解决“今天吃什么”决策问题。
@@ -28,7 +28,7 @@
 - `data/dishes.js`：静态分类与菜品数据源。
 
 ## 4) 已实现功能清单
-1. 分类筛选与关键词搜索（按 `name + desc` 过滤）。
+1. 分类筛选与关键词搜索（按 `name + desc` 过滤）；当前静态分类包含鸡肉、牛肉、猪肉、鸭肉、鱼肉、虾类、蔬菜、特殊。
 2. 加入/取消“今日菜单”。
 3. 菜品加入/取消“容我想想”（候选池）。
 4. “查看已选”菜单弹窗。
@@ -42,7 +42,7 @@
 
 ## 5) 关键流程（简版）
 1. 页面初始化
-- 通过 `wx.getSystemInfoSync + wx.getMenuButtonBoundingClientRect` 计算 `navBarHeight` 与胶囊避让宽度，生成菜单页自定义头部布局参数。
+- 通过 `wx.getWindowInfo + wx.getMenuButtonBoundingClientRect` 计算 `navBarHeight` 与胶囊避让宽度，生成菜单页自定义头部布局参数。
 - 菜单页默认使用当天日期，拉取该日期菜单/候选池并生成可见菜品列表；日历标记由日历 Tab 读取。
 
 2. 点菜
@@ -121,6 +121,45 @@
 - 风险与回滚点：
 
 ## 10) 变更日志
+- 日期：2026-03-10
+- 目标：消除菜单页与自定义 TabBar 中 wx.getSystemInfoSync 的弃用 warning。
+- 改动文件：custom-tab-bar/index.js、pages/order/index.js、docs/PROJECT_CONTEXT.md
+- 行为变化：
+  - 自定义 TabBar 的安全区底部 inset 计算改用 wx.getWindowInfo()。
+  - 菜单页自定义头部导航参数计算改用 wx.getWindowInfo()。
+  - 现有安全区、胶囊避让、顶部布局和滚动区域行为保持不变，仅移除弃用 API 调用。
+- 验证步骤：
+  - 重新编译后进入“菜单”Tab，确认控制台不再出现 getSafeAreaInsetBottom 和 resolveNavLayout 对应的 wx.getSystemInfoSync is deprecated warning。
+  - 检查底部自定义 TabBar 仍贴合安全区，无额外留白或遮挡。
+  - 检查菜单页标题与右上角胶囊仍对齐，列表和底部按钮布局不抖动。
+- 风险与回滚点：
+  - 该变更只替换窗口信息读取 API；若个别基础库对 wx.getWindowInfo() 兼容异常，可回滚 custom-tab-bar/index.js 与 pages/order/index.js 的对应调用。
+- 日期：2026-03-10
+- 目标：修复新增菜品缺失本地缩略图时持续请求不存在图片导致的 500 控制台报错。
+- 改动文件：`pages/order/index.js`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 菜单页图片映射改为仅命中已存在的本地资源文件。
+  - 对没有对应 `/assets/dishes/<id>.png` 的菜品，首次渲染即直接使用 placeholder，不再先请求不存在文件再走 image error 回退。
+  - 不影响已有图片菜品的缩略图展示，也不影响已选弹窗、候选池和抽奖结果的图片逻辑。
+- 验证步骤：
+  - 打开“菜单”Tab，切到 `鸭肉 / 猪肉 / 蔬菜 / 特殊` 分类，确认新菜品直接显示 placeholder，控制台不再出现 `dish_008 / 009 / 011 / 012 / 013 / 014 / 015` 的本地图片 500 报错。
+  - 打开“查看已选”与“抽奖”弹窗，确认这些缺图菜品同样直接显示 placeholder。
+  - 检查 `dish_001~007`、`dish_010` 仍正常显示原本缩略图。
+- 风险与回滚点：
+  - 该修复依赖 `pages/order/index.js` 中的已落盘图片白名单；后续若新增真实图片资源，需要同步补充映射。回滚点为该文件顶部 `DISH_IMAGE_BY_ID` 常量。
+- 日期：2026-03-10
+- 目标：扩充菜单页静态分类与菜品数据，支持猪肉、鸭肉、蔬菜、特殊等筛选。
+- 改动文件：`data/dishes.js`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 菜单页分类筛选新增 `猪肉 / 鸭肉 / 蔬菜 / 特殊`。
+  - 静态菜品数据新增对应分类示例菜，`小炒肉` 从牛肉改归为猪肉。
+  - 新分类会自动复用现有筛选、搜索、日历 emoji 标记和本地存储兼容逻辑，无需额外页面改造。
+- 验证步骤：
+  - 打开“菜单”Tab，确认分类栏出现 `猪肉 / 鸭肉 / 蔬菜 / 特殊`。
+  - 逐个点击上述分类，确认列表能筛出对应菜品，且“全部”下可见新增示例菜。
+  - 将新增分类菜品加入今日菜单后进入“日历”Tab，确认对应日期出现新分类 emoji 标记。
+- 风险与回滚点：
+  - 新增菜品默认尝试读取 `/assets/dishes/<id>.png`，当前若无对应图片会回退 placeholder；如需回滚，仅回退 `data/dishes.js` 本次数据扩展。
 - 日期：2026-03-06
 - 目标：去除底部 Tab 文案后方灰色圆形背景，保留文案与选中切页逻辑。
 - 改动文件：`custom-tab-bar/index.wxss`、`docs/PROJECT_CONTEXT.md`

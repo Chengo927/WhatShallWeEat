@@ -15,9 +15,9 @@ const TAB_LIST = [
 
 function getSafeAreaInsetBottom() {
   try {
-    const systemInfo = typeof wx.getSystemInfoSync === 'function' ? wx.getSystemInfoSync() : {}
-    const safeArea = systemInfo && systemInfo.safeArea ? systemInfo.safeArea : null
-    const screenHeight = Number(systemInfo.screenHeight) || 0
+    const windowInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : {}
+    const safeArea = windowInfo && windowInfo.safeArea ? windowInfo.safeArea : null
+    const screenHeight = Number(windowInfo.screenHeight) || 0
     const safeBottom = safeArea ? Number(safeArea.bottom) || 0 : 0
     if (screenHeight > 0 && safeBottom > 0) {
       return Math.max(0, screenHeight - safeBottom)

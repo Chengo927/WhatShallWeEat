@@ -2,13 +2,16 @@ const sourceData = require('../../data/dishes') || {}
 const categories = Array.isArray(sourceData.categories) ? sourceData.categories : []
 const dishes = Array.isArray(sourceData.dishes) ? sourceData.dishes : []
 const DISH_PLACEHOLDER = '/assets/dishes/placeholder.png'
-const DISH_IMAGE_BY_ID = dishes.reduce((accumulator, dish) => {
-  if (!dish || !dish.id) {
-    return accumulator
-  }
-  accumulator[dish.id] = `/assets/dishes/${dish.id}.png`
-  return accumulator
-}, {})
+const DISH_IMAGE_BY_ID = {
+  dish_001: '/assets/dishes/dish_001.png',
+  dish_002: '/assets/dishes/dish_002.png',
+  dish_003: '/assets/dishes/dish_003.png',
+  dish_004: '/assets/dishes/dish_004.png',
+  dish_005: '/assets/dishes/dish_005.png',
+  dish_006: '/assets/dishes/dish_006.png',
+  dish_007: '/assets/dishes/dish_007.png',
+  dish_010: '/assets/dishes/dish_010.png'
+}
 const {
   addDishToDate,
   removeDishFromDate,
@@ -64,9 +67,9 @@ function resolveNavLayout() {
   const fallbackMenuHeight = 32
   const fallbackMenuGap = 8
   const fallbackCapsuleWidth = 96
-  const systemInfo = typeof wx.getSystemInfoSync === 'function' ? wx.getSystemInfoSync() : {}
-  const statusBarHeight = Number(systemInfo.statusBarHeight) || 0
-  const screenWidth = Number(systemInfo.screenWidth) || Number(systemInfo.windowWidth) || 375
+  const windowInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : {}
+  const statusBarHeight = Number(windowInfo.statusBarHeight) || 0
+  const screenWidth = Number(windowInfo.screenWidth) || Number(windowInfo.windowWidth) || 375
   const menuRect =
     typeof wx.getMenuButtonBoundingClientRect === 'function'
       ? wx.getMenuButtonBoundingClientRect()
