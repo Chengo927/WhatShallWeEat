@@ -25,7 +25,7 @@
 - `components/calendar-popup/*`：日期弹窗与标记渲染。
 - `utils/storage.js`：核心数据模型、读写、迁移、去重、日历标记同步。
 - `utils/lottery.js`：抽奖算法（无放回抽样）。
-- `data/dishes.js`：静态分类与菜品数据。
+- `data/dishes.js`：静态分类与菜品数据（标准字段：`dishId/name/categoryId/emoji/img/imgFileId/xhsLink`，兼容 `id/category` 别名）。
 - `pages/dish-link/index.*`：菜品做法链接页（有链接时直出 `web-view`，无链接时显示空状态）。
 
 ## 4) 已实现功能清单
@@ -40,7 +40,7 @@
 9. 菜品列表/已选列表/抽奖结果统一使用菜品缩略图展示（本地图片映射 + placeholder 兜底）。
 10. 全局底部 Tab 导航（官方 tabBar + 自定义 UI）：支持菜单/日历/我的切换与选中态同步，当前文案显示在上方圆形区域内（无下方独立文字行）。
 11. 日历能力已迁移到“日历 Tab”主页面承载，菜单页不再提供日历入口/弹层。
-12. 菜品链接页：点击菜品可进入对应链接页；若该菜配置了 `link / url / recipeUrl / recipeLink`，则自动打开做法网页。
+12. 菜品链接页：点击菜品可进入对应链接页；标准链接字段为 `xhsLink`，旧 `link / url / recipeUrl / recipeLink` 仅作兼容读取。
 ## 5) 关键流程（简版）
 1. 页面初始化
 - 通过 `wx.getWindowInfo + wx.getMenuButtonBoundingClientRect` 计算 `navBarHeight` 与胶囊避让宽度，生成菜单页自定义头部布局参数。
@@ -75,8 +75,9 @@
 - `MEAL_PENDING_BY_DATE`：`{ [date]: dishId[] }`，旧结构（兼容）。
 
 `DishItem` 规范：
-- `{ id: string, name: string, emoji?: string, img?: string }`
-- 说明：当前采用渲染前补齐策略，storage 里旧数据无 `img` 也可通过 `id -> /assets/dishes/<id>.png` 映射显示。
+- 标准字段：`{ dishId: string, name: string, categoryId: string, emoji?: string, img?: string, imgFileId?: string, xhsLink?: string }`
+- 兼容字段：运行时继续保留 `id` 作为 `dishId` 别名，便于旧页面、旧 storage、旧事件契约继续工作。
+- 说明：本地标准化会把历史上的 `link / url / recipeUrl / recipeLink` 统一归并为 `xhsLink`；旧数据缺图时仍可按 `id -> /assets/dishes/<id>.png` 回退显示。
 
 ## 7) 组件事件契约（给 Agent 快速对接）
 - `dish-card`
@@ -105,7 +106,7 @@
 1. 当前主页面仍保留 Skyline 配置，但后续改动以稳定和体验优先；除非明确需要，不要为了追 `renderer` 做专项改造。`order` 页 WXSS 仍建议保持 class 选择器，减少不同渲染层下的兼容风险。
 2. `pages/index` 与 `navigation-bar` 是模板/备用结构，未在 `app.json` 启用。
 3. 抽奖确认有保护：若抽奖后修改了数量（`selectedK !== lotteryCount`）会要求重抽。
-4. 菜品图片默认按 `id` 读取 `/assets/dishes/<id>.png`，加载失败后按 `dishId` 记录回退并统一显示 `/assets/dishes/placeholder.png`。
+4. 菜品种子数据优先直接提供 `img`；旧数据或缺图场景仍按 `id -> /assets/dishes/<id>.png` 回退，最终统一兜底到 `/assets/dishes/placeholder.png`。
 
 ## 9) 维护规则（强制）
 每次代码改动后，必须更新本文件，至少包含：
@@ -121,6 +122,30 @@
 - 验证步骤：
 - 风险与回滚点：
 ## 10) 变更日志
+- 日期：2026-03-11
+- 目标：修复误注册 Demo 样例页导致的小程序编译失败。
+- 改动文件：`app.json`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 从 `app.json` 的 `pages` 中移除了 `Demo/list`。
+  - `Demo` 目录继续保留为样例数据/素材目录，不再参与正式页面编译。
+- 验证步骤：
+  - 在微信开发者工具重新编译，确认不再出现 `WXML file not found: ./Demo/list.wxml`。
+  - 打开“菜单 / 日历 / 我的”三个 Tab，确认页面都能正常进入，没有白屏和 `__route__ is not defined`。
+- 风险与回滚点：
+  - 若后续确实需要一个独立 Demo 页面，应该把它放到正式页面目录并补齐路由设计，而不是直接把样例目录挂进 `pages`。回滚点为 `app.json` 中本次删除的 `Demo/list`。
+- 日期：2026-03-11
+- 目标：统一静态菜品与本地存储的数据模型，为后续云菜库和历史快照复用同一套字段。
+- 改动文件：`data/dishes.js`、`utils/storage.js`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - `data/dishes.js` 的每道菜现在都补齐了 `dishId / name / categoryId / emoji / img / imgFileId / xhsLink`。
+  - 为了不打断当前菜单页、日历页和组件调用，运行时仍保留 `id` 与 `category` 兼容别名。
+  - `utils/storage.js` 会把旧 `link / url / recipeUrl / recipeLink` 统一归并为 `xhsLink`，并让新写入的 `DishItem` 带上标准字段。
+- 验证步骤：
+  - 打开 `data/dishes.js`，确认每个菜对象都存在 `dishId/categoryId/img/imgFileId/xhsLink`。
+  - 打开菜单页与日历页，确认现有加菜、候选池、日历标记仍正常，不因为 `id` 改造而失效。
+  - 若 storage 中仍有旧结构菜品对象，重新进入页面后确认仍能正常显示名称、emoji 和图片。
+- 风险与回滚点：
+  - 当前页面仍大量使用 `id`；本次通过兼容别名平滑过渡。若后续要彻底切到 `dishId`，需要同步改组件事件和页面消费点。回滚时优先回退 `data/dishes.js` 与 `utils/storage.js`。
 - 日期：2026-03-11
 - 目标：把项目执行口径从“Skyline 优先”调整为“稳定与体验优先”。
 - 改动文件：`AI_RULES.md`、`.agents/rules/coder.md`、`.agents/rules/debuger.md`、`.agents/rules/planner.md`、`docs/PROJECT_CONTEXT.md`

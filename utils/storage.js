@@ -36,16 +36,59 @@ function getDishCategoryEmoji(dish) {
   return typeof dish.emoji === 'string' ? dish.emoji : ''
 }
 
+function getDishId(dish) {
+  if (!dish || typeof dish !== 'object') {
+    return ''
+  }
+
+  if (typeof dish.dishId === 'string' && dish.dishId) {
+    return dish.dishId
+  }
+
+  return typeof dish.id === 'string' ? dish.id : ''
+}
+
+function getDishLink(dish) {
+  if (!dish || typeof dish !== 'object') {
+    return ''
+  }
+
+  const fieldNames = ['xhsLink', 'recipeUrl', 'recipeLink', 'recipe_link', 'url', 'link']
+  for (let index = 0; index < fieldNames.length; index += 1) {
+    const fieldName = fieldNames[index]
+    if (typeof dish[fieldName] === 'string' && dish[fieldName]) {
+      return dish[fieldName]
+    }
+  }
+
+  return ''
+}
+
 const DISH_META_MAP = (Array.isArray(dishes) ? dishes : []).reduce((accumulator, dish) => {
-  if (!dish || !dish.id) {
+  const dishId = getDishId(dish)
+  if (!dishId) {
     return accumulator
   }
 
-  accumulator[dish.id] = {
-    id: dish.id,
+  const categoryId =
+    typeof dish.categoryId === 'string' && dish.categoryId
+      ? dish.categoryId
+      : typeof dish.category === 'string'
+      ? dish.category
+      : ''
+
+  accumulator[dishId] = {
+    dishId,
+    id: dishId,
     name: typeof dish.name === 'string' ? dish.name : '',
+    categoryId,
+    category: categoryId,
     emoji: getDishCategoryEmoji(dish)
   }
+
+  accumulator[dishId].img = typeof dish.img === 'string' ? dish.img : ''
+  accumulator[dishId].imgFileId = typeof dish.imgFileId === 'string' ? dish.imgFileId : ''
+  accumulator[dishId].xhsLink = getDishLink(dish)
 
   return accumulator
 }, {})
@@ -102,12 +145,12 @@ function normalizeDishItem(rawDish) {
     return null
   }
 
-  const id = typeof rawDish.id === 'string' ? rawDish.id : ''
-  if (!id) {
+  const dishId = getDishId(rawDish)
+  if (!dishId) {
     return null
   }
 
-  const fallbackDish = DISH_META_MAP[id] || {}
+  const fallbackDish = DISH_META_MAP[dishId] || {}
   const name =
     typeof rawDish.name === 'string' && rawDish.name
       ? rawDish.name
@@ -120,8 +163,39 @@ function normalizeDishItem(rawDish) {
       : typeof fallbackDish.emoji === 'string'
       ? fallbackDish.emoji
       : ''
+  const categoryId =
+    typeof rawDish.categoryId === 'string' && rawDish.categoryId
+      ? rawDish.categoryId
+      : typeof rawDish.category === 'string' && rawDish.category
+      ? rawDish.category
+      : typeof fallbackDish.categoryId === 'string'
+      ? fallbackDish.categoryId
+      : ''
+  const img =
+    typeof rawDish.img === 'string' && rawDish.img
+      ? rawDish.img
+      : typeof fallbackDish.img === 'string'
+      ? fallbackDish.img
+      : ''
+  const imgFileId =
+    typeof rawDish.imgFileId === 'string'
+      ? rawDish.imgFileId
+      : typeof fallbackDish.imgFileId === 'string'
+      ? fallbackDish.imgFileId
+      : ''
+  const xhsLink = getDishLink(rawDish) || (typeof fallbackDish.xhsLink === 'string' ? fallbackDish.xhsLink : '')
 
-  return { id, name, emoji }
+  return {
+    dishId,
+    id: dishId,
+    name,
+    categoryId,
+    category: categoryId,
+    emoji,
+    img,
+    imgFileId,
+    xhsLink
+  }
 }
 
 function normalizeDishList(rawValue) {
@@ -219,10 +293,11 @@ function buildDateEmojiMarksFromMenu(dishList) {
 
   const emojiList = []
   dishList.forEach((dish) => {
-    if (!dish || !dish.id) {
+    const dishId = getDishId(dish)
+    if (!dishId) {
       return
     }
-    const emoji = (typeof dish.emoji === 'string' && dish.emoji) || DISH_CATEGORY_EMOJI_MAP[dish.id]
+    const emoji = (typeof dish.emoji === 'string' && dish.emoji) || DISH_CATEGORY_EMOJI_MAP[dishId]
     if (emoji && !emojiList.includes(emoji)) {
       emojiList.push(emoji)
     }
