@@ -45,6 +45,18 @@ Component({
       })
     },
 
+    onTapDetail() {
+      const { dish } = this.data
+      if (!dish || !dish.id) {
+        return
+      }
+
+      this.triggerEvent('detailtap', {
+        dishId: dish.id,
+        dish
+      })
+    },
+
     onTapAction() {
       const { dish, disabled } = this.data
       if (!dish || !dish.id) {

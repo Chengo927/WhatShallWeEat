@@ -1,22 +1,24 @@
-<view class="dish-card">
+<view class="dish-card" bindtap="onTapDetail">
   <view class="thumb-wrap">
     <image class="thumb-image" src="{{dish.img}}" mode="aspectFill" binderror="onThumbError" />
   </view>
 
   <view class="dish-content">
     <text class="dish-title">{{dish.name}}</text>
+    <text wx:if="{{dish.desc}}" class="dish-desc">{{dish.desc}}</text>
+    <text class="dish-link-hint">{{dish.link ? '点击查看做法' : '点击查看详情'}}</text>
   </view>
 
   <view class="action-wrap">
     <view
       class="action-btn {{actionVariant === 'danger' ? 'action-btn-danger' : ''}} {{disabled ? 'action-btn-disabled' : ''}}"
-      bindtap="onTapAction"
+      catchtap="onTapAction"
     >
       {{disabled ? disabledText : actionText}}
     </view>
     <view
       class="pending-btn {{pending ? 'pending-btn-active' : ''}}"
-      bindtap="onTapPending"
+      catchtap="onTapPending"
     >
       {{pending ? pendingActiveText : pendingText}}
     </view>

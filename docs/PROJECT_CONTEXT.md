@@ -25,7 +25,8 @@
 - `components/calendar-popup/*`：日期弹窗与标记渲染。
 - `utils/storage.js`：核心数据模型、读写、迁移、去重、日历标记同步。
 - `utils/lottery.js`：抽奖算法（无放回抽样）。
-- `data/dishes.js`：静态分类与菜品数据源。
+- `data/dishes.js`：静态分类、菜品数据与可选做法链接。
+- `pages/dish-link/index.*`：菜品做法链接页（有链接时直出 `web-view`，无链接时显示空状态）。
 
 ## 4) 已实现功能清单
 1. 分类筛选与关键词搜索（按 `name + desc` 过滤）；当前静态分类包含鸡肉、牛肉、猪肉、鸭肉、鱼肉、虾类、蔬菜、特殊。
@@ -39,7 +40,7 @@
 9. 菜品列表/已选列表/抽奖结果统一使用菜品缩略图展示（本地图片映射 + placeholder 兜底）。
 10. 全局底部 Tab 导航（官方 tabBar + 自定义 UI）：支持菜单/日历/我的切换与选中态同步，当前文案显示在上方圆形区域内（无下方独立文字行）。
 11. 日历能力已迁移到“日历 Tab”主页面承载，菜单页不再提供日历入口/弹层。
-
+12. 菜品链接页：点击菜品可进入对应链接页；若该菜配置了 `link / url / recipeUrl / recipeLink`，则自动打开做法网页。
 ## 5) 关键流程（简版）
 1. 页面初始化
 - 通过 `wx.getWindowInfo + wx.getMenuButtonBoundingClientRect` 计算 `navBarHeight` 与胶囊避让宽度，生成菜单页自定义头部布局参数。
@@ -119,8 +120,64 @@
 - 行为变化：
 - 验证步骤：
 - 风险与回滚点：
-
 ## 10) 变更日志
+- 日期：2026-03-10
+- 目标：删除菜品链接页内的显式返回按钮，恢复仅使用系统导航返回。
+- 改动文件：`pages/dish-link/index.js`、`pages/dish-link/index.wxml`、`pages/dish-link/index.wxss`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 链接页移除页面内部“返回”按钮，不再覆盖在 `web-view` 之上。
+  - 返回能力改回使用系统导航栏，空状态页顶部也不再额外展示返回控件。
+- 验证步骤：
+  - 从菜单页进入任意菜品链接页，确认页面内部不再显示“返回”按钮。
+  - 使用系统导航返回，确认仍可正常回到上一页。
+- 风险与回滚点：
+  - 该变更只移除链接页内部返回控件；如需恢复，可回滚 `pages/dish-link/*` 中本次删除的按钮实现。
+- 日期：2026-03-10
+- 目标：去掉菜品链接页顶部导航栏中的菜名显示。
+- 改动文件：`pages/dish-link/index.js`、`pages/dish-link/index.json`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 菜品链接页顶部导航栏标题清空，不再显示具体菜名。
+  - 保留左上角返回按钮与白色导航栏背景，页面主体内容不变。
+- 验证步骤：
+  - 从菜单页点击“小炒肉”或任意其他菜进入链接页，确认顶部不再显示菜名文字。
+  - 确认返回按钮仍可见且可正常返回上一页。
+- 风险与回滚点：
+  - 该变更只影响链接页导航标题；如需恢复展示菜名，可回滚 `pages/dish-link/index.js` 与 `pages/dish-link/index.json`。
+- 日期：2026-03-10
+- 目标：修复进入菜品链接页后顶部出现大块黑色区域的问题。
+- 改动文件：`pages/dish-link/index.json`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 菜品链接页显式设置默认导航栏背景为白色，并保持黑色文字。
+  - 进入 `web-view` 时顶部不再使用默认黑色导航背景，返回入口可正常识别。
+- 验证步骤：
+  - 从菜单页点击任意菜进入链接页，确认顶部不再出现大块黑色区域。
+  - 确认顶部标题与返回入口可见，页面网页内容从白色导航栏下方正常开始。
+- 风险与回滚点：
+  - 该修复只调整链接页导航栏颜色配置；若后续改回自定义导航，可回滚 `pages/dish-link/index.json`。
+- 日期：2026-03-10
+- 目标：给菜品链接页补一个显式返回按钮，避免进入网页后缺少清晰回退入口。
+- 改动文件：`pages/dish-link/index.js`、`pages/dish-link/index.wxml`、`pages/dish-link/index.wxss`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 菜品链接页左上角新增返回按钮；有链接时按钮覆盖在 `web-view` 之上，无链接时显示在空状态页顶部。
+  - 点击返回优先执行 `wx.navigateBack`，若当前没有历史栈则回退到“菜单”Tab。
+- 验证步骤：
+  - 从菜单页点开任意已配置链接的菜，确认链接页左上角能看到“返回”按钮。
+  - 点击“返回”，确认能回到上一个页面；若用直达方式打开该页，也能安全回到菜单页。
+- 风险与回滚点：
+  - `web-view` 覆盖层使用 `cover-view`；若个别机型上层级异常，可回滚 `pages/dish-link/*` 中的返回按钮实现。
+- 日期：2026-03-10
+- 目标：支持点击菜品进入对应做法链接页，并在已配置链接时自动打开网页。
+- 改动文件：`app.json`、`components/dish-card/dish-card.js`、`components/dish-card/dish-card.wxml`、`components/dish-card/dish-card.wxss`、`pages/order/index.js`、`pages/order/index.wxml`、`pages/dish-link/index.js`、`pages/dish-link/index.json`、`pages/dish-link/index.wxml`、`pages/dish-link/index.wxss`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - 菜单页菜卡支持点击进入链接页；“查看已选”和“抽奖结果”里的菜品也可点击进入。
+  - 链接页会按菜品 id 从 `data/dishes.js` 读取 `link / url / recipeUrl / recipeLink`；若存在则直接用 `web-view` 打开。
+  - 若菜品还没配置链接，则展示“暂无做法链接”的空状态，不影响原有加菜、待选、抽奖逻辑。
+- 验证步骤：
+  - 在 `data/dishes.js` 给任意菜补一个 `link` 字段后重新编译，点击该菜，确认进入新页面并自动打开网页。
+  - 点击菜单页右侧“已加入 / 容我想想”等按钮，确认仍只执行原有操作，不会误跳转。
+  - 打开“查看已选”和“抽奖结果”，点击菜品名称区域，确认也能进入对应链接页。
+- 风险与回滚点：
+  - 外部网页能否在小程序 `web-view` 中打开，仍取决于业务域名配置以及目标站点是否允许嵌入；若后续改为纯展示页或复制链接方案，可回滚 `pages/dish-link/*` 与相关点击绑定。
 - 日期：2026-03-10
 - 目标：消除菜单页与自定义 TabBar 中 wx.getSystemInfoSync 的弃用 warning。
 - 改动文件：custom-tab-bar/index.js、pages/order/index.js、docs/PROJECT_CONTEXT.md

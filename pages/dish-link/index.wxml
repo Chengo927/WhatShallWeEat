@@ -1,0 +1,8 @@
+<web-view wx:if="{{hasLink}}" src="{{link}}"></web-view>
+
+<view wx:else class="empty-page">
+  <view class="empty-card">
+    <text class="empty-title">{{dishName}}</text>
+    <text class="empty-desc">{{emptyText}}</text>
+  </view>
+</view>

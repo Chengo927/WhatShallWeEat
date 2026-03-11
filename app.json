@@ -2,7 +2,8 @@
   "pages": [
     "pages/order/index",
     "pages/calendar/index",
-    "pages/mine/index"
+    "pages/mine/index",
+    "pages/dish-link/index"
   ],
   "tabBar": {
     "custom": true,
