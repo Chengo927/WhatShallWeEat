@@ -1,46 +1,26 @@
 const TAB_LIST = [
   {
     pagePath: '/pages/order/index',
-    text: '菜单'
+    text: '\u83dc\u5355'
   },
   {
     pagePath: '/pages/calendar/index',
-    text: '日历'
+    text: '\u65e5\u5386'
   },
   {
     pagePath: '/pages/mine/index',
-    text: '我的'
+    text: '\u6211\u7684'
   }
 ]
-
-function getSafeAreaInsetBottom() {
-  try {
-    const windowInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : {}
-    const safeArea = windowInfo && windowInfo.safeArea ? windowInfo.safeArea : null
-    const screenHeight = Number(windowInfo.screenHeight) || 0
-    const safeBottom = safeArea ? Number(safeArea.bottom) || 0 : 0
-    if (screenHeight > 0 && safeBottom > 0) {
-      return Math.max(0, screenHeight - safeBottom)
-    }
-    return 0
-  } catch (error) {
-    console.error('[tabbar] getSafeAreaInsetBottom failed', error)
-    return 0
-  }
-}
 
 Component({
   data: {
     selected: 0,
-    tabList: TAB_LIST,
-    safeAreaInsetBottom: 0
+    tabList: TAB_LIST
   },
 
   lifetimes: {
     attached() {
-      this.setData({
-        safeAreaInsetBottom: getSafeAreaInsetBottom()
-      })
       this.syncSelectedFromRoute()
     }
   },
@@ -59,7 +39,7 @@ Component({
       }
 
       const currentPage = pages[pages.length - 1] || {}
-      const currentPath = `/${currentPage.route || ''}`
+      const currentPath = '/' + (currentPage.route || '')
       const selected = this.data.tabList.findIndex((tab) => tab.pagePath === currentPath)
       if (selected >= 0 && selected !== this.data.selected) {
         this.setData({

@@ -1,4 +1,4 @@
-<view class="tab-bar-container" style="padding-bottom: {{safeAreaInsetBottom}}px;">
+<view class="tab-bar-container">
   <view class="tab-bar-main">
     <block wx:for="{{tabList}}" wx:key="pagePath">
       <view

@@ -1,6 +1,6 @@
 # WhatShallWeEat 项目上下文（给 Agent 快速加载）
 
-最后更新：2026-03-10
+最后更新：2026-03-11
 
 ## 1) 项目是做什么的
 - 这是一个微信小程序，用于解决“今天吃什么”决策问题。
@@ -8,15 +8,15 @@
 
 ## 2) 技术与约束
 - 技术栈：微信小程序原生（WXML / WXSS / JS）。
-- 组件框架：`glass-easel`。
+- 技术实现以微信小程序原生能力为主。
 - 数据存储：本地存储 `wx.getStorageSync / wx.setStorageSync`（无后端）。
 - 当前页面结构：`pages/order/index`、`pages/calendar/index`、`pages/mine/index`（通过 tabBar 切换）。
-- 当前 `pages/order/index.json` 使用 `renderer: "skyline"` + `componentFramework: "glass-easel"`。
+- 当前主页面仍保留 `renderer: "skyline"` + `componentFramework: "glass-easel"` + `navigationStyle: "custom"` 配置，但项目目标已改为“稳定优先”，不再把 Skyline 作为专项目标。
 
 ## 3) 目录速览（核心）
 - `pages/order/index.*`：主业务页面（筛选、点菜、候选池、抽奖、弹窗）。
-- `pages/calendar/index.*`：Tab 页“日历”占位页（Skyline）。
-- `pages/mine/index.*`：Tab 页“我的”占位页（Skyline）。
+- `pages/calendar/index.*`：Tab 页“日历”页面。
+- `pages/mine/index.*`：Tab 页“我的”页面。
 - `custom-tab-bar/*`：官方 `tabBar.custom` 底部导航（菜单/日历/我的）。
 - `components/meal-calendar/*`：内嵌式日历组件（年月切换、日期选择、marker 展示）。
 - `components/dish-card/*`：菜品卡片（加入/取消、候选切换）。
@@ -25,7 +25,7 @@
 - `components/calendar-popup/*`：日期弹窗与标记渲染。
 - `utils/storage.js`：核心数据模型、读写、迁移、去重、日历标记同步。
 - `utils/lottery.js`：抽奖算法（无放回抽样）。
-- `data/dishes.js`：静态分类、菜品数据与可选做法链接。
+- `data/dishes.js`：静态分类与菜品数据。
 - `pages/dish-link/index.*`：菜品做法链接页（有链接时直出 `web-view`，无链接时显示空状态）。
 
 ## 4) 已实现功能清单
@@ -102,7 +102,7 @@
   - 事件：`confirm` -> `{ date }`，`change` -> `{ date }`
 
 ## 8) 当前注意点（后续改动请先看）
-1. 主页面已使用 Skyline（`renderer: skyline`），`order` 页 WXSS 应保持 class 选择器，避免 Skyline 选择器告警。
+1. 当前主页面仍保留 Skyline 配置，但后续改动以稳定和体验优先；除非明确需要，不要为了追 `renderer` 做专项改造。`order` 页 WXSS 仍建议保持 class 选择器，减少不同渲染层下的兼容风险。
 2. `pages/index` 与 `navigation-bar` 是模板/备用结构，未在 `app.json` 启用。
 3. 抽奖确认有保护：若抽奖后修改了数量（`selectedK !== lotteryCount`）会要求重抽。
 4. 菜品图片默认按 `id` 读取 `/assets/dishes/<id>.png`，加载失败后按 `dishId` 记录回退并统一显示 `/assets/dishes/placeholder.png`。
@@ -121,6 +121,31 @@
 - 验证步骤：
 - 风险与回滚点：
 ## 10) 变更日志
+- 日期：2026-03-11
+- 目标：把项目执行口径从“Skyline 优先”调整为“稳定与体验优先”。
+- 改动文件：`AI_RULES.md`、`.agents/rules/coder.md`、`.agents/rules/debuger.md`、`.agents/rules/planner.md`、`docs/PROJECT_CONTEXT.md`
+- 行为变化：
+  - Agent 不再把 Skyline 视为默认目标或必须条件。
+  - 现有页面若保留 `renderer: "skyline"`、`componentFramework: "glass-easel"`、`navigationStyle: "custom"`，以兼容现状为主，不再为追 Skyline 单独改造。
+  - 任务规划、编码与排障的验收重点改为用户体验、稳定性和可验证性。
+- 验证步骤：
+  - 打开上述规则与上下文文档，确认 Skyline 表述已从“硬约束/必选”改为“兼容现状/非目标”。
+  - 后续让 Planner 输出一次任务包，确认不再默认要求页面必须开启 `renderer: "skyline"`。
+- 风险与回滚点：
+  - 本次仅调整规则与文档，不影响运行时行为；如需恢复 Skyline 优先口径，可回滚上述文档。
+- ???2026-03-10
+- ???????????????????????????
+- ?????`app.json`?`components/dish-card/dish-card.js`?`components/dish-card/dish-card.wxml`?`components/dish-card/dish-card.wxss`?`pages/order/index.js`?`pages/order/index.wxml`?`docs/PROJECT_CONTEXT.md`
+- ?????
+  - ??????????????????????????
+  - ????????????????????????????
+  - ?????? `app.json` ????????????????????????
+- ?????
+  - ??????Tab???????????????????????????
+  - ????????????????????????????????????
+  - ???????? / ?????????????
+- ???????
+  - ????? `data/dishes.js` ???????????????????????? `pages/dish-link/*` ?????????
 - 日期：2026-03-10
 - 目标：删除菜品链接页内的显式返回按钮，恢复仅使用系统导航返回。
 - 改动文件：`pages/dish-link/index.js`、`pages/dish-link/index.wxml`、`pages/dish-link/index.wxss`、`docs/PROJECT_CONTEXT.md`

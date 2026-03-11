@@ -39,14 +39,7 @@
   font-size: 24rpx;
   line-height: 1.5;
 }
-
-.dish-link-hint {
-  margin-top: 12rpx;
-  display: inline-block;
-  color: #0e6f63;
-  font-size: 22rpx;
-  line-height: 1.4;
-}
+
 
 .action-wrap {
   flex-shrink: 0;

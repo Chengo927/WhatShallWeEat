@@ -1,33 +1,32 @@
 {
-  "pages": [
-    "pages/order/index",
-    "pages/calendar/index",
-    "pages/mine/index",
-    "pages/dish-link/index"
-  ],
-  "tabBar": {
-    "custom": true,
-    "list": [
-      {
-        "pagePath": "pages/order/index",
-        "text": "菜单"
-      },
-      {
-        "pagePath": "pages/calendar/index",
-        "text": "日历"
-      },
-      {
-        "pagePath": "pages/mine/index",
-        "text": "我的"
-      }
-    ]
-  },
-  "window": {
-    "navigationBarTextStyle": "black",
-    "navigationStyle": "custom"
-  },
-  "componentFramework": "glass-easel",
-  "style": "v2",
-  "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+    "pages":  [
+                  "pages/order/index",
+                  "pages/calendar/index",
+                  "pages/mine/index"
+              ],
+    "tabBar":  {
+                   "custom":  true,
+                   "list":  [
+                                {
+                                    "pagePath":  "pages/order/index",
+                                    "text":  "菜单"
+                                },
+                                {
+                                    "pagePath":  "pages/calendar/index",
+                                    "text":  "日历"
+                                },
+                                {
+                                    "pagePath":  "pages/mine/index",
+                                    "text":  "我的"
+                                }
+                            ]
+               },
+    "window":  {
+                   "navigationBarTextStyle":  "black",
+                   "navigationStyle":  "custom"
+               },
+    "componentFramework":  "glass-easel",
+    "style":  "v2",
+    "sitemapLocation":  "sitemap.json",
+    "lazyCodeLoading":  "requiredComponents"
 }

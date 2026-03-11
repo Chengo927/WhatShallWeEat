@@ -354,44 +354,6 @@ Page({
     this.markDishImageFallback(dishId)
   },
 
-  openDishLinkById(dishId) {
-    if (!dishId) {
-      return
-    }
-
-    wx.navigateTo({
-      url: `/pages/dish-link/index?id=${encodeURIComponent(dishId)}`,
-      fail() {
-        wx.showToast({
-          title: '打开失败，请重试',
-          icon: 'none'
-        })
-      }
-    })
-  },
-
-  onOpenDishLink(event) {
-    const detail = event && event.detail ? event.detail : {}
-    const dishId = detail.dishId || (detail.dish && detail.dish.id ? detail.dish.id : '')
-    this.openDishLinkById(dishId)
-  },
-
-  onOpenSummaryDishLink(event) {
-    const dishId =
-      event && event.currentTarget && event.currentTarget.dataset
-        ? event.currentTarget.dataset.dishId
-        : ''
-    this.openDishLinkById(dishId)
-  },
-
-  onOpenLotteryDishLink(event) {
-    const dishId =
-      event && event.currentTarget && event.currentTarget.dataset
-        ? event.currentTarget.dataset.dishId
-        : ''
-    this.openDishLinkById(dishId)
-  },
-
   onAddDish(event) {
     try {
       const { dishId, added } = event.detail || {}
